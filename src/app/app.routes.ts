@@ -15,5 +15,10 @@ export const routes: Routes = [
     {
         path: 'heroDetail',
         component: HeroDetailComponent
+    },
+    {
+        path: 'heroDetail/:id',
+        component: HeroDetailComponent
     }
+
 ];

@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'hero-list',
@@ -38,7 +39,10 @@ export class HeroListComponent implements OnInit {
   public vIsLoaded: boolean = false;
   public vSearchText: string = '';
 
-  constructor(private _appCharacterService: CharactersService) {}
+  constructor(
+    private _appCharacterService: CharactersService,
+    private _router: Router
+  ) {}
 
 
   ngOnInit(): void {
@@ -74,8 +78,7 @@ export class HeroListComponent implements OnInit {
     });
   }
 
-  handleClickSearch(): void {
-    console.log(this.vSearchText);
+  handleClickSearch(): void {    
     this.getCharacterList(0, this.vSearchText);
     this.vSearchText = '';
   }
@@ -83,6 +86,14 @@ export class HeroListComponent implements OnInit {
   handlePage(pEvent:  DataViewPageEvent): void {     
     this.vIsLoaded = false;   
     this.getCharacterList(pEvent.first, this.vSearchText);
+  }
+
+  handleClickEdit(pSuperHeroId: number): void {
+    this._router.navigate(['heroDetail', pSuperHeroId]);
+  }
+
+  handleClickNewHero(): void {
+    this._router.navigate(['heroDetail']);
   }
 
 

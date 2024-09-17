@@ -21,7 +21,8 @@
         pRipple 
         icon="pi pi-plus"         
         label="New super hero"         
-        severity="warning">
+        severity="warning"
+        (click)="handleClickNewHero()">
     </button>
 
 
@@ -62,7 +63,8 @@
                                         <p-button 
                                         class="flex-auto md:flex-initial white-space-nowrap"
                                         icon="pi pi-pencil"                                        
-                                        severity="success" />
+                                        severity="success" 
+                                        (click)="handleClickEdit(character.id)"/>
 
                                         <p-button 
                                             alt="Button Delete super hero"    
