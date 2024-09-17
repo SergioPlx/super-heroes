@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataViewModule, DataViewPageEvent } from 'primeng/dataview';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCustomResponse } from '../../interfaces/customResponse/custom-response.interface';
@@ -47,26 +47,37 @@ export class HeroListComponent implements OnInit {
 
   ngOnInit(): void {
     const characters: any = localStorage.getItem('characters');    
-    this._lst_Characters = JSON.parse(characters);
+    this._lst_Characters = JSON.parse(characters) || [];
 
-    const cachedResponse: any = localStorage.getItem('response');
-    this.vPaginator = JSON.parse(cachedResponse);
-
-    if (!this.lst_Characters) {
+    if (!this.lst_Characters.length) {
       this.getCharacterList();
     } else {
       this.vIsLoaded = true;
+
+      const cachedResponse: any = localStorage.getItem('response');
+      this.vPaginator = JSON.parse(cachedResponse);
     }
   }
 
   getCharacterList(pOffset: number = 0, pSuperHeroName: string = ''): void {    
+
+    const llst_CopyCharacters: IModelCharacter[] = [];
+
     this._appCharacterService.getCharactersList(pOffset, pSuperHeroName)
     .subscribe({
       next: (response: IModelCustomResponse) => {
         console.log(response);
         this.vPaginator = response;
-        this._lst_Characters = response.results;
-        localStorage.setItem('characters', JSON.stringify(response.results));
+
+        response.results.forEach((lrow_Character: IModelCharacter) => {        
+          const lSuperHeroId: any = localStorage.getItem('deleteSuperHero' + lrow_Character.id);        
+          if (!lSuperHeroId) {
+            llst_CopyCharacters.push(lrow_Character);
+          }
+        })
+
+        this._lst_Characters = [...llst_CopyCharacters];
+        localStorage.setItem('characters', JSON.stringify(this._lst_Characters));
         localStorage.setItem('response', JSON.stringify(response));
       },
       error: (err) => {
@@ -84,13 +95,28 @@ export class HeroListComponent implements OnInit {
   }
 
   handlePage(pEvent:  DataViewPageEvent): void {     
-    this.vIsLoaded = false;   
+    this.vIsLoaded = false;       
     this.getCharacterList(pEvent.first, this.vSearchText);
   }
 
   handleClickEdit(pSuperHeroId: number): void {
     this._router.navigate(['heroDetail', pSuperHeroId]);
   }
+
+  handleClickDelete(pSuperHeroId: number): void {
+    localStorage.setItem('deleteSuperHero' + pSuperHeroId, JSON.stringify(pSuperHeroId));
+
+    this.onDeleteSuperHero(pSuperHeroId);
+  }
+
+  onDeleteSuperHero(pSuperHeroId: number): void {
+    const lSuperHeroIndex: number = this.lst_Characters.findIndex((lrow_SuperHero: IModelCharacter) => lrow_SuperHero.id === pSuperHeroId);
+    if (lSuperHeroIndex !== -1) {
+      this._lst_Characters.splice(lSuperHeroIndex, 1); 
+      localStorage.setItem('characters', JSON.stringify(this._lst_Characters));
+    }
+  }
+  
 
   handleClickNewHero(): void {
     this._router.navigate(['heroDetail']);

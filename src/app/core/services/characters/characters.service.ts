@@ -21,8 +21,7 @@ export class CharactersService {
       ));
   }
 
-  // https://gateway.marvel.com:443/v1/public/characters/1009368?apikey=9410fe4fe0599788dab680c735795c5a
-  getCharacterById(pSuperHeroId: number): Observable<IModelCustomResponse> {
+  getCharacterById(pSuperHeroId: string | null): Observable<IModelCustomResponse> {
     let url: string = `${environment.baseUrl}characters/${pSuperHeroId}?apikey=${environment.SECRET_KEY}`;
     return this._http.get<any[]>(url)
       .pipe(
