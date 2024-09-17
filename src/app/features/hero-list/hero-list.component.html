@@ -4,6 +4,7 @@
             type="text" 
             pInputText 
             placeholder="Search super hero" 
+            class="capitalize"
             (keyup.enter)="handleClickSearch()"
             [(ngModel)]="vSearchText"
             #ctrlInputSearchHero/>
@@ -15,10 +16,12 @@
     </p-inputGroup>
 
     <button 
+        alt="Button new super hero"
         pButton 
         pRipple 
-        label="New super hero" 
-        class="p-button-success">
+        icon="pi pi-plus"         
+        label="New super hero"         
+        severity="warning">
     </button>
 
 
@@ -49,19 +52,23 @@
                                         <div class="text-lg font-medium text-900 mt-2">
                                             {{ character.name }}
                                         </div>
+                                        <p>
+                                            {{character.description}}
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="flex flex-column md:align-items-end gap-5">                            
                                     <div class="flex flex-row-reverse md:flex-row gap-2">                                
                                         <p-button 
                                         class="flex-auto md:flex-initial white-space-nowrap"
-                                        icon="pi pi-shopping-cart" 
-                                        label="Edit" />
+                                        icon="pi pi-pencil"                                        
+                                        severity="success" />
 
                                         <p-button 
+                                            alt="Button Delete super hero"    
                                             class="flex-auto md:flex-initial white-space-nowrap"
-                                            icon="pi pi-shopping-cart" 
-                                            label="Delete" />
+                                            icon="pi pi-trash" 
+                                            severity="danger" />
                                     </div>
                                 </div>
                             </div>
