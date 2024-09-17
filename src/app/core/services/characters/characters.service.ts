@@ -13,7 +13,7 @@ export class CharactersService {
 
 
   getCharactersList(pOffset: number = 0): Observable<IModelCustomResponse> {
-    return this._http.get<any[]>(`${environment.baseUrl}characters?offset=${pOffset}&apikey=${environment.SECRET_KEY}`)
+    return this._http.get<any[]>(`${environment.baseUrl}characters?offset=${pOffset}&limit=10&apikey=${environment.SECRET_KEY}`)
       .pipe(
         map((result: any) => result.data
       ));

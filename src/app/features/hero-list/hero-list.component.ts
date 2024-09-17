@@ -4,13 +4,22 @@ import { CharactersService } from '../../core/services/characters/characters.ser
 import { IModelCustomResponse } from '../../interfaces/customResponse/custom-response.interface';
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+import { InputTextModule } from 'primeng/inputtext';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
     ButtonModule,
-    DataViewModule
+    DataViewModule,
+    ProgressSpinnerModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule
   ],
   providers: [
     CharactersService
@@ -40,12 +49,10 @@ export class HeroListComponent implements OnInit {
       this.getCharacterList();
     } else {
       this.vIsLoaded = true;
-      console.log('Characters from cache', this.lst_Characters);
-      console.log('Chached Response: ', this.vPaginator);
     }
   }
 
-  getCharacterList(pOffset: number = 0): void {
+  getCharacterList(pOffset: number = 0): void {    
     this._appCharacterService.getCharactersList(pOffset)
     .subscribe({
       next: (response: IModelCustomResponse) => {
@@ -64,8 +71,8 @@ export class HeroListComponent implements OnInit {
     });
   }
 
-  handlePage(pEvent:  DataViewPageEvent): void {
-    console.log('Event: ', pEvent);
+  handlePage(pEvent:  DataViewPageEvent): void {     
+    this.vIsLoaded = false;   
     this.getCharacterList(pEvent.first);
   }
 
