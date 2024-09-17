@@ -9,11 +9,13 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
+    FormsModule,
     ButtonModule,
     DataViewModule,
     ProgressSpinnerModule,
@@ -34,6 +36,7 @@ export class HeroListComponent implements OnInit {
   public vPaginator: IModelCustomResponse = <IModelCustomResponse>{};
 
   public vIsLoaded: boolean = false;
+  public vSearchText: string = '';
 
   constructor(private _appCharacterService: CharactersService) {}
 
@@ -52,8 +55,8 @@ export class HeroListComponent implements OnInit {
     }
   }
 
-  getCharacterList(pOffset: number = 0): void {    
-    this._appCharacterService.getCharactersList(pOffset)
+  getCharacterList(pOffset: number = 0, pSuperHeroName: string = ''): void {    
+    this._appCharacterService.getCharactersList(pOffset, pSuperHeroName)
     .subscribe({
       next: (response: IModelCustomResponse) => {
         console.log(response);
@@ -71,9 +74,15 @@ export class HeroListComponent implements OnInit {
     });
   }
 
+  handleClickSearch(): void {
+    console.log(this.vSearchText);
+    this.getCharacterList(0, this.vSearchText);
+    this.vSearchText = '';
+  }
+
   handlePage(pEvent:  DataViewPageEvent): void {     
     this.vIsLoaded = false;   
-    this.getCharacterList(pEvent.first);
+    this.getCharacterList(pEvent.first, this.vSearchText);
   }
 
 

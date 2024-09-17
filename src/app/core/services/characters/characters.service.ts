@@ -12,8 +12,10 @@ export class CharactersService {
   constructor(private _http: HttpClient) { }
 
 
-  getCharactersList(pOffset: number = 0): Observable<IModelCustomResponse> {
-    return this._http.get<any[]>(`${environment.baseUrl}characters?offset=${pOffset}&limit=10&apikey=${environment.SECRET_KEY}`)
+  getCharactersList(pOffset: number = 0, pSuperHeroName: string = ''): Observable<IModelCustomResponse> {
+    let url: string = `${environment.baseUrl}characters?offset=${pOffset}&limit=10&apikey=${environment.SECRET_KEY}`;
+    if (pSuperHeroName.length > 0) url += `&nameStartsWith=${pSuperHeroName}`;
+    return this._http.get<any[]>(url)
       .pipe(
         map((result: any) => result.data
       ));
