@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCustomResponse } from '../../interfaces/customResponse/custom-response.interface';
@@ -7,7 +7,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { FileUploadModule } from 'primeng/fileupload';
+import { FileBeforeUploadEvent, FileSelectEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
+import { HttpEvent } from '@angular/common/http';
 
 @Component({
   selector: 'app-hero-detail',
@@ -27,6 +28,8 @@ import { FileUploadModule } from 'primeng/fileupload';
   styleUrl: './hero-detail.component.css'
 })
 export class HeroDetailComponent implements OnInit {
+
+  @ViewChild('ctrlSuperHeroImage', {static: false}) vCtrlSuperHeroImage!: ElementRef;
 
   private _superHeroId!: string | null;
   private _row_SuperHero: IModelCharacter = <IModelCharacter>{};
@@ -68,7 +71,6 @@ export class HeroDetailComponent implements OnInit {
       this._appCharacterService.getCharacterById(this._superHeroId)
         .subscribe({
           next: (response: IModelCustomResponse) => {
-            console.log(response.results.at(0));
             this._row_SuperHero = response.results.at(0);
             localStorage.setItem('superHero' + this._superHeroId, JSON.stringify(response.results.at(0)));
           },
@@ -84,11 +86,57 @@ export class HeroDetailComponent implements OnInit {
       this.formGroup.setValue({
         name: this.row_SuperHero.name,
         description: this.row_SuperHero.description,
-        image: `${this.row_SuperHero.thumbnail.path}.${this.row_SuperHero.thumbnail.extension}`
+        image: this.row_SuperHero.image
       });
     }
   }
 
+  handleClickSave(): void {    
+    const cachedCharacters: any = localStorage.getItem('updatedCharacters');
+    const llst_CachedCharacters: IModelCharacter[] = JSON.parse(cachedCharacters) || [];
+
+
+    // if (llst_CachedCharacters.length) {    
+      const lIndex: number = llst_CachedCharacters.findIndex((llrow_Character: IModelCharacter) => llrow_Character.id.toString() === this._superHeroId);
+
+      // if (lIndex > 0) {
+        const lnew_Character: IModelCharacter = {...this.row_SuperHero};
+        lnew_Character.name = this.formGroup.value.name;
+        lnew_Character.description = this.formGroup.value.description;
+        // this.row_SuperHero.name = this.formGroup.value.name;
+        // this.row_SuperHero.description = this.formGroup.value.description;
+
+        console.log(llst_CachedCharacters);
+
+        if (lIndex !== -1) {
+          llst_CachedCharacters[lIndex] = {...lnew_Character};
+        } else {
+          llst_CachedCharacters.push(lnew_Character);
+        }
+
+        localStorage.removeItem('updatedCharacters');
+        localStorage.setItem('updatedCharacters', JSON.stringify(llst_CachedCharacters));        
+        localStorage.removeItem('superHero' + this._superHeroId);
+        localStorage.setItem('superHero' + this._superHeroId, JSON.stringify(this.row_SuperHero));
+      // }
+    //}
+    
+  }
+
+  handleUploadFile(pEvent:  FileSelectEvent): void {
+    const file: any = pEvent.currentFiles.at(0);
+    const fileExtension: string = pEvent.currentFiles.at(0)?.type.split('/')[1] || '';
+    
+
+    let reader = new FileReader();
+    reader.onload = (evt: any) => {      
+      // this.vCtrlSuperHeroImage.nativeElement.file = evt.target.result;      
+      // this._row_SuperHero.thumbnail.extension = fileExtension;
+      // this._row_SuperHero.thumbnail.path = file.objectURL.changingThisBreaksApplicationSecurity;
+      this.vCtrlSuperHeroImage.nativeElement.src = file.objectURL.changingThisBreaksApplicationSecurity;
+    }
+    reader.readAsText(file);
+  }
 
   handleClickBack(): void {    
     this.clearSuperHero();

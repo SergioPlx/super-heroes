@@ -1,18 +1,14 @@
 export interface IModelCharacter {
-    comics: any;
+    // comics: any;
     description: string;
-    events: any;
+    // events: any;
     id: number;
-    modified: Date;
+    // modified: Date;
     name: string;
-    resourceURI: string;
-    series: any;
-    stories: any;
-    thumbnail: IModelCharacterThumbnail;
-    urls: any[];
-}
-
-export interface IModelCharacterThumbnail {
-    extension: string;
-    path: string;
+    // resourceURI: string;
+    // series: any;
+    // stories: any;
+    // thumbnail: IModelCharacterThumbnail;
+    image: string;
+    // urls: any[];
 }

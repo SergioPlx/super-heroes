@@ -2,7 +2,7 @@
 <div class="grid pt-3">
     <div class="col-12">
         <button 
-            alt="Button new super hero"
+            alt="Button back to list"
             class="ml-3 mr-2"
             pButton 
             pRipple 
@@ -12,13 +12,13 @@
         </button>
 
         <button 
-            alt="Button new super hero"            
+            alt="Button save super hero"            
             pButton 
             pRipple 
             icon="pi pi-save"                     
             severity="warning"
             [disabled]="!formGroup.valid"
-            (click)="handleClickBack()">
+            (click)="handleClickSave()">
         </button>
     </div>
 </div>
@@ -27,23 +27,25 @@
     <div class="col-12">
         <form enctype="multipart/form-data" [formGroup]="formGroup">
             <div class="grid">
-                <div class="col-3">
+                <div class="col-3 md:col-4 sm:col-12">
                     <img class="block xl:block mx-auto border-round hero-image" 
-                        [src]="row_SuperHero.thumbnail.path + '.' + row_SuperHero.thumbnail.extension" 
-                        [alt]="row_SuperHero.name" />  
+                        [src]="row_SuperHero.image" 
+                        [alt]="row_SuperHero.name" 
+                        #ctrlSuperHeroImage/>  
 
-                        <div class="text-center p-3">
+                        <div class="text-center pt-3">
                             <p-fileUpload 
                                 styleClass="w-full"
                                 mode="basic" 
                                 chooseLabel="Choose" 
                                 chooseIcon="pi pi-upload"                            
                                 accept="image/*" 
-                                maxFileSize="1000000" />
+                                maxFileSize="1000000" 
+                                (onSelect)="handleUploadFile($event)" />
                         </div>
                 </div>
 
-                <div class="col">
+                <div class="col md:col-8 sm:col-12">
                     <div class="field">
                         <label 
                             alt="Super Hero Name"
