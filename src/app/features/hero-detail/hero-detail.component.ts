@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Sanitizer, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCustomResponse } from '../../interfaces/customResponse/custom-response.interface';
@@ -7,8 +7,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { FileBeforeUploadEvent, FileSelectEvent, FileUploadEvent, FileUploadModule } from 'primeng/fileupload';
-import { HttpEvent } from '@angular/common/http';
+import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-hero-detail',
@@ -27,7 +27,7 @@ import { HttpEvent } from '@angular/common/http';
   templateUrl: './hero-detail.component.html',
   styleUrl: './hero-detail.component.css'
 })
-export class HeroDetailComponent implements OnInit {
+export class HeroDetailComponent implements AfterViewInit {
 
   @ViewChild('ctrlSuperHeroImage', {static: false}) vCtrlSuperHeroImage!: ElementRef;
 
@@ -35,33 +35,36 @@ export class HeroDetailComponent implements OnInit {
   private _row_SuperHero: IModelCharacter = <IModelCharacter>{};
 
   public vIsNew: boolean = true;
-  public formGroup: FormGroup = new FormGroup ({
-    name: new FormControl('', Validators.required),
-    description: new FormControl(''),
-    image: new FormControl('')
-  });
+  public vIsLoaded: boolean = false;
+
+  public formGroup!: FormGroup;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
-    private _appCharacterService: CharactersService
+    private _appCharacterService: CharactersService,
+    private _sanitizer: DomSanitizer
   ) {    
     this._activatedRoute.paramMap.subscribe({
       next: (params) => {        
         const id = params.get('id');
         this._superHeroId = id;
-        this.vIsNew = false;        
+        this.vIsNew = this._superHeroId === null;        
       }
     });
+
+    this.formGroup = new FormGroup ({
+      name: new FormControl('', Validators.required),
+      description: new FormControl(''),
+      image: new FormControl('')
+    })
   }
 
-
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     if (!this.vIsNew) {      
       this.getSuperHero();
     }
   }
-
 
   getSuperHero(): void {
     const superHero: any = localStorage.getItem('superHero' + this._superHeroId);
@@ -76,9 +79,11 @@ export class HeroDetailComponent implements OnInit {
           },
           error: (err) => {
             console.log(err);
+            this.vIsLoaded = true;
           },
           complete: () => {
             console.log('complete');
+            this.vIsLoaded = true;
           }
         });
     } else {
@@ -88,6 +93,7 @@ export class HeroDetailComponent implements OnInit {
         description: this.row_SuperHero.description,
         image: this.row_SuperHero.image
       });
+      this.vIsLoaded = true;
     }
   }
 
@@ -103,6 +109,7 @@ export class HeroDetailComponent implements OnInit {
         const lnew_Character: IModelCharacter = {...this.row_SuperHero};
         lnew_Character.name = this.formGroup.value.name;
         lnew_Character.description = this.formGroup.value.description;
+        lnew_Character.image = this.formGroup.value.image;
         // this.row_SuperHero.name = this.formGroup.value.name;
         // this.row_SuperHero.description = this.formGroup.value.description;
 
@@ -117,22 +124,24 @@ export class HeroDetailComponent implements OnInit {
         localStorage.removeItem('updatedCharacters');
         localStorage.setItem('updatedCharacters', JSON.stringify(llst_CachedCharacters));        
         localStorage.removeItem('superHero' + this._superHeroId);
-        localStorage.setItem('superHero' + this._superHeroId, JSON.stringify(this.row_SuperHero));
+        localStorage.setItem('superHero' + this._superHeroId, JSON.stringify(lnew_Character));
       // }
     //}
     
   }
 
   handleUploadFile(pEvent:  FileSelectEvent): void {
-    const file: any = pEvent.currentFiles.at(0);
-    const fileExtension: string = pEvent.currentFiles.at(0)?.type.split('/')[1] || '';
+    const file: any = pEvent.currentFiles.at(0);    
     
 
     let reader = new FileReader();
     reader.onload = (evt: any) => {      
       // this.vCtrlSuperHeroImage.nativeElement.file = evt.target.result;      
       // this._row_SuperHero.thumbnail.extension = fileExtension;
-      // this._row_SuperHero.thumbnail.path = file.objectURL.changingThisBreaksApplicationSecurity;
+      // console.log(evt);
+      // this._row_SuperHero.image = URL.createObjectURL(file);
+      console.log(this._row_SuperHero.image)
+      this.formGroup.patchValue({image: this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file))});
       this.vCtrlSuperHeroImage.nativeElement.src = file.objectURL.changingThisBreaksApplicationSecurity;
     }
     reader.readAsText(file);
