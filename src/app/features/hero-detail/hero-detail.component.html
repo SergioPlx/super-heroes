@@ -1,4 +1,17 @@
 <p-toast (onClose)="handleClickBack()"/>
+
+<div class="w-full text-left text-white pl-3">    
+    <h2 class="text-4xl">
+        @if(vIsNew) {
+            New Super Hero
+        }@else {
+            Edit Super Hero
+        }
+    </h2>
+</div>
+
+
+
 @if(vIsLoaded) {
     <div class="grid pt-3">
         <div class="col-12">
