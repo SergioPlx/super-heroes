@@ -1,15 +1,11 @@
-<p-inputGroup class="pb-3">    
+<div class="w-full pb-3">
     <input 
         type="text" 
+        class="w-full"
         pInputText 
         placeholder="Search super hero" 
         TextCapitalize
-        (keyup.enter)="handleClickSearch()"
+        (input)="handleClickSearch()"
         [(ngModel)]="vSearchText"
-        #ctrlInputSearchHero/>
-    <button type="button" 
-        pButton 
-        label="Search"
-        (click)="handleClickSearch()">
-    </button>
-</p-inputGroup>
+        #ctrlInputSearchHero/>    
+</div>

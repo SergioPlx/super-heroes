@@ -19,7 +19,7 @@
     <div class="card pt-3">
         
         <p-dataView [rows]="10"                    
-                    [value]="lst_Characters"
+                    [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
                     [lazy]="true"          
                     [loading]="!vIsLoaded"
                     [loadingIcon]="'pi pi-spinner'"

@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { CharacterCardComponent } from '../../shared/components/character-card/character-card.component';
 import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
 
 @Component({
   selector: 'hero-list',
@@ -18,10 +19,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     ButtonModule,    
     DataViewModule,        
     CharacterCardComponent,    
-    SearcherComponent
+    SearcherComponent,
+    ValueFilterPipe
   ],
   providers: [
-    CharactersService
+    CharactersService    
   ],
   templateUrl: './hero-list.component.html',
   styleUrl: './hero-list.component.css'
@@ -29,7 +31,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 export class HeroListComponent implements OnInit {
 
   private _lst_Characters: IModelCharacter[] = [];
-  private _textSearched: string = '';
+  public vTextSearched: string = '';
   
   public vIsLoaded: boolean = false;
 
@@ -57,13 +59,13 @@ export class HeroListComponent implements OnInit {
   }
 
   handleSearch(pTextSearch: string): void {    
-    this.getCharacterList(0, pTextSearch);
-    this._textSearched = pTextSearch;
+    // this.getCharacterList(0, pTextSearch);
+    this.vTextSearched = pTextSearch;
   }
 
   handlePage(pEvent:  DataViewPageEvent): void {     
     this.vIsLoaded = false;       
-    this.getCharacterList(pEvent.first, this._textSearched);
+    this.getCharacterList(pEvent.first, this.vTextSearched);
   }
 
   // TODO: Refactor to use api
