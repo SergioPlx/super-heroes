@@ -4,16 +4,20 @@ import { CharactersService } from '../../core/services/characters/characters.ser
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
 import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form/charecter-form.component';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-hero-detail',
   standalone: true,
   imports: [
     ButtonModule,
-    CharecterFormComponent
+    CharecterFormComponent,
+    ToastModule    
   ],
   providers: [
-    CharactersService
+    CharactersService,
+    MessageService
   ],
   templateUrl: './hero-detail.component.html',
   styleUrl: './hero-detail.component.css'
@@ -31,7 +35,8 @@ export class HeroDetailComponent implements OnInit {
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
-    private _appCharacterService: CharactersService
+    private _appCharacterService: CharactersService,
+    private messageService: MessageService
   ) {    
     this._activatedRoute.paramMap.subscribe({
       next: (params) => {        
@@ -63,31 +68,31 @@ export class HeroDetailComponent implements OnInit {
 
     if (this.vIsNew) {
       this._appCharacterService.postSuperHero(lrowNewCharacter)
-        .subscribe(res => {
-          console.log(res);
-          // TODO: Add Toast
-          this._router.navigate(['heroList']);
+        .subscribe(res => {                    
+            this._showNotificationSuccess();
         });
     } else {
       this._appCharacterService.updateSuperHero(this._superHeroId, lrowNewCharacter)
-        .subscribe(res => {
-          console.log(res);
-          // TODO: Add Toast
-          this._router.navigate(['heroList']);
+        .subscribe(res => {                    
+          this._showNotificationSuccess();
         })
     }
   }
 
   handleClickBack(): void {    
-    this.clearSuperHero();
     this._router.navigate(['heroList']);
   }
 
-  private clearSuperHero(): void {
-    if (!this.vIsNew) {
-      localStorage.removeItem('superHero' + this._superHeroId);
-    }
+  private _showNotificationSuccess(): void {
+    this.messageService.add(
+      { severity: 'success', 
+        summary: 'Success', 
+        detail: 'Super hero is saved successfully' 
+      }
+    );
   }
+  
+  // TODO: Manage errors
 
   get row_SuperHero(): IModelCharacter {
     return this._row_SuperHero;

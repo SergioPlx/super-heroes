@@ -3,14 +3,16 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { IModelCharacter } from '../../../../interfaces/character/character.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @Component({
   selector: 'charecter-form',
   standalone: true,
   imports: [
+    FileUploadModule,
     InputTextModule,
     InputTextareaModule, 
-    ReactiveFormsModule
+    ReactiveFormsModule    
   ],
   templateUrl: './charecter-form.component.html',
   styleUrl: './charecter-form.component.css'
