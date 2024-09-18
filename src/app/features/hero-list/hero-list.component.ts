@@ -11,6 +11,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CharacterCardComponent } from '../../shared/components/character-card/character-card.component';
 
 @Component({
   selector: 'hero-list',
@@ -22,7 +23,8 @@ import { Router } from '@angular/router';
     ProgressSpinnerModule,
     InputGroupModule,
     InputGroupAddonModule,
-    InputTextModule
+    InputTextModule,
+    CharacterCardComponent
   ],
   providers: [
     CharactersService
