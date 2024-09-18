@@ -1,7 +1,9 @@
 <form enctype="multipart/form-data" [formGroup]="formCharacterGroup">
     <div class="grid">
         <div class="col-3 md:col-4 sm:col-12">
-            <img class="block xl:block mx-auto border-round hero-image"                 
+            <img class="pb-3 block xl:block mx-auto border-round hero-image"      
+                width="350"
+                height="350"
                 [src]="row_SuperHero.image || 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'" 
                 [alt]="row_SuperHero.name" 
                 #ctrlSuperHeroImage/> 
@@ -9,6 +11,7 @@
 
             <p-fileUpload 
                 mode="basic" 
+                styleClass="w-full"
                 chooseLabel="Choose" 
                 chooseIcon="pi pi-upload"
                 name="demo[]"                  
