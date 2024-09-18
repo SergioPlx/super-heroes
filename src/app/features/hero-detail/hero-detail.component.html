@@ -1,4 +1,5 @@
 
+@if(vIsLoaded) {
     <div class="grid pt-3">
         <div class="col-12">
             <button 
@@ -10,8 +11,8 @@
                 severity="warning"            
                 (click)="handleClickBack()">
             </button>
-
-            <button 
+        
+            <button                 
                 alt="Button save super hero"            
                 pButton 
                 pRipple 
@@ -22,11 +23,11 @@
             </button>
         </div>
     </div>
-
-    <div class="grid">
-        <div class="col-12">
-            <charecter-form 
-                [vinput_rowSuperHero]="row_SuperHero" 
-                #ctrlCharacterForm />
-        </div>
+}
+<div class="grid">
+    <div class="col-12">
+        <charecter-form 
+            [vinput_rowSuperHero]="row_SuperHero" 
+            #ctrlCharacterForm />
     </div>
+</div>

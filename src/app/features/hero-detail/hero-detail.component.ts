@@ -1,4 +1,4 @@
-import { OnInit, Component, ElementRef, Sanitizer, ViewChild } from '@angular/core';
+import { OnInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCharacter } from '../../interfaces/character/character.interface';
@@ -19,9 +19,7 @@ import { CharecterFormComponent } from '../../shared/components/character-form/c
   styleUrl: './hero-detail.component.css'
 })
 export class HeroDetailComponent implements OnInit {
-
-  // @ViewChild('ctrlSuperHeroImage', {static: false}) vCtrlSuperHeroImage!: ElementRef;
-  
+ 
   @ViewChild('ctrlCharacterForm', {static: false}) vCtrlCharacterForm!: CharecterFormComponent;
 
   private _superHeroId!: string | null;
@@ -29,7 +27,6 @@ export class HeroDetailComponent implements OnInit {
 
   public vIsNew: boolean = true;
   public vIsLoaded: boolean = false;
-
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -56,6 +53,7 @@ export class HeroDetailComponent implements OnInit {
   getSuperHero(): void {
     this._appCharacterService.getCharacterById(this._superHeroId)
       .subscribe((result: IModelCharacter) => {
+        this.vIsLoaded = true;
         this._row_SuperHero = result;
       })
   }
@@ -95,7 +93,7 @@ export class HeroDetailComponent implements OnInit {
     return this._row_SuperHero;
   }
 
-  get isValid(): boolean {
+  get isValid(): boolean {    
     return this.vCtrlCharacterForm?.isValid;
   }
 
