@@ -49,11 +49,22 @@ export class HeroListComponent implements OnInit {
     const characters: any = localStorage.getItem('characters');    
     this._lst_Characters = JSON.parse(characters) || [];
 
+
     if (!this.lst_Characters.length) {
       this.getCharacterList();
     } else {
-      this.vIsLoaded = true;
+      const llst_UpdatedCharacters: IModelCharacter[] = JSON.parse(localStorage.getItem('updatedCharacters') || '');
+      this._lst_Characters = this._lst_Characters.map((lrow_Character: IModelCharacter) => {
+        const lIsSomeSuperHeroUpdated: boolean = llst_UpdatedCharacters.some((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
+        if (lIsSomeSuperHeroUpdated) {
+          const lrow_UpdatedCharacter: IModelCharacter = <IModelCharacter>llst_UpdatedCharacters.find((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
+          lrow_Character = {...lrow_UpdatedCharacter};          
+        }
+        return lrow_Character
+      })
 
+      this.vIsLoaded = true;
+      console.log('from cache');
       const cachedResponse: any = localStorage.getItem('response');
       this.vPaginator = JSON.parse(cachedResponse);
     }
@@ -69,14 +80,24 @@ export class HeroListComponent implements OnInit {
         console.log(response);
         this.vPaginator = response;
 
+        const llst_UpdatedCharacters: IModelCharacter[] = JSON.parse(localStorage.getItem('updatedCharacters') || '');
+
         response.results.forEach((lrow_Character: IModelCharacter) => {        
-          const lSuperHeroId: any = localStorage.getItem('deleteSuperHero' + lrow_Character.id);        
-          if (!lSuperHeroId) {
+          const lSuperHeroIdDeleted: any = localStorage.getItem('deleteSuperHero' + lrow_Character.id); 
+        
+          if (!lSuperHeroIdDeleted) {
+            const lIsSomeSuperHeroUpdated: boolean = llst_UpdatedCharacters.some((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
+            if (lIsSomeSuperHeroUpdated) {
+              const lrow_UpdatedCharacter: IModelCharacter = <IModelCharacter>llst_UpdatedCharacters.find((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
+              lrow_Character = {...lrow_UpdatedCharacter};
+
+            }
             llst_CopyCharacters.push(lrow_Character);
+            
           }
         })
-
-        this._lst_Characters = [...llst_CopyCharacters];
+      
+        this._lst_Characters = [...llst_CopyCharacters];      
         localStorage.setItem('characters', JSON.stringify(this._lst_Characters));
         localStorage.setItem('response', JSON.stringify(response));
       },

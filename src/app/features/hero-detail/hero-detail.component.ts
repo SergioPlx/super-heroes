@@ -98,7 +98,7 @@ export class HeroDetailComponent implements AfterViewInit {
   }
 
   handleClickSave(): void {    
-    const cachedCharacters: any = localStorage.getItem('updatedCharacters');
+    const cachedCharacters: any = localStorage.getItem('characters');
     const llst_CachedCharacters: IModelCharacter[] = JSON.parse(cachedCharacters) || [];
 
 
@@ -125,6 +125,9 @@ export class HeroDetailComponent implements AfterViewInit {
         localStorage.setItem('updatedCharacters', JSON.stringify(llst_CachedCharacters));        
         localStorage.removeItem('superHero' + this._superHeroId);
         localStorage.setItem('superHero' + this._superHeroId, JSON.stringify(lnew_Character));
+
+
+        this._router.navigate(['heroList']);
       // }
     //}
     
