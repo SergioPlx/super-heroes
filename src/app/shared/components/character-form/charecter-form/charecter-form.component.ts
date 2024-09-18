@@ -1,9 +1,10 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, Sanitizer, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IModelCharacter } from '../../../../interfaces/character/character.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { FileUploadModule } from 'primeng/fileupload';
+import { FileBeforeUploadEvent, FileSelectEvent, FileUploadModule, UploadEvent } from 'primeng/fileupload';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'charecter-form',
@@ -12,12 +13,14 @@ import { FileUploadModule } from 'primeng/fileupload';
     FileUploadModule,
     InputTextModule,
     InputTextareaModule, 
-    ReactiveFormsModule    
+    ReactiveFormsModule
   ],
   templateUrl: './charecter-form.component.html',
   styleUrl: './charecter-form.component.css'
 })
 export class CharecterFormComponent implements OnInit, OnChanges {
+
+  @ViewChild('ctrlSuperHeroImage', {static: false}) vCtrlSuperHeroImage!: ElementRef;
 
   @Input() vinput_IsNew: boolean = false;
   @Input() vinput_IsLoaded: boolean = false;
@@ -25,7 +28,7 @@ export class CharecterFormComponent implements OnInit, OnChanges {
 
   public formCharacterGroup: FormGroup = new FormGroup({})
 
-  constructor() {
+  constructor(private _sanitizer: DomSanitizer) {
     this._initForm();
   }
 
@@ -36,6 +39,21 @@ export class CharecterFormComponent implements OnInit, OnChanges {
     if (changes['vinput_rowSuperHero'].currentValue.id) {      
       this._updateForm();
     }
+  }
+
+  onUpload(pEvent:  FileSelectEvent): void {        
+    this.vCtrlSuperHeroImage.nativeElement.onload = () => {
+      let imgCanvas = document.createElement('canvas');
+      let imgContext = imgCanvas.getContext('2d');
+
+      imgCanvas.width = this.vCtrlSuperHeroImage.nativeElement.offsetWidth;
+      imgCanvas.height = this.vCtrlSuperHeroImage.nativeElement.offsetHeight;
+
+      imgContext?.drawImage(this.vCtrlSuperHeroImage.nativeElement, 0, 0, this.vCtrlSuperHeroImage.nativeElement.offsetWidth, this.vCtrlSuperHeroImage.nativeElement.offsetHeight);
+
+      this.formCharacterGroup.patchValue({image: imgCanvas.toDataURL('image/jpg')});
+    }    
+    this.row_SuperHero.image = URL.createObjectURL(pEvent.files[0]);
   }
 
   private _initForm(): void {
