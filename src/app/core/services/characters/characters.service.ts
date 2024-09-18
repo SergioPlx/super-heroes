@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, delay, interval, map, Observable, of } from 'rxjs';
 import { IModelCustomResponse } from '../../../interfaces/customResponse/custom-response.interface';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
@@ -27,7 +27,7 @@ export class CharactersService {
           if (!llstCharacters || !llstCharacters.length) {
             result.data.results = this._mapResponse(result);
             this._storage.setItem('lstCharacters', result.data.results);
-            return result.data
+            return result.data.results
           }
           return llstCharacters;
         }
@@ -62,7 +62,12 @@ export class CharactersService {
 
   //TODO: Add delete
   deleteSuperHero(pSuperHeroId: number): Observable<any> {
-    return of()
+    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+    const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lrowCharacter: IModelCharacter) => {
+      return lrowCharacter.id !== pSuperHeroId
+    });
+    this._storage.setItem('lstCharacters', filteredCharacters);
+    return of(filteredCharacters).pipe(delay(1000));
   }
 
   //TODO: Pass to helper

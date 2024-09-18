@@ -5,20 +5,19 @@ import { IModelCustomResponse } from '../../interfaces/customResponse/custom-res
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
 import { Router } from '@angular/router';
 
 import { CharacterCardComponent } from '../../shared/components/character-card/character-card.component';
 import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
-import { catchError, map } from 'rxjs';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
-    ButtonModule,
+    ButtonModule,    
     DataViewModule,        
-    CharacterCardComponent,
+    CharacterCardComponent,    
     SearcherComponent
   ],
   providers: [
@@ -31,11 +30,11 @@ export class HeroListComponent implements OnInit {
 
   private _lst_Characters: IModelCharacter[] = [];
   private _textSearched: string = '';
-
-
+  
   public vIsLoaded: boolean = false;
 
   constructor(
+
     private _appCharacterService: CharactersService,
     private _router: Router
   ) {}
@@ -74,19 +73,18 @@ export class HeroListComponent implements OnInit {
 
   // TODO: Refactor to use api
   handleClickDelete(pSuperHeroId: number): void {
-    localStorage.setItem('deleteSuperHero' + pSuperHeroId, JSON.stringify(pSuperHeroId));
-
-    this.onDeleteSuperHero(pSuperHeroId);
+    this.vIsLoaded = false;
+    this._appCharacterService.deleteSuperHero(pSuperHeroId)
+      .subscribe({
+        next: (response: any) => {
+          this._lst_Characters = response;            
+        },
+        complete: () => {
+          this.vIsLoaded = true;
+        }
+      });
   }
 
-  // TODO: Refactor to use api
-  onDeleteSuperHero(pSuperHeroId: number): void {
-    const lSuperHeroIndex: number = this.lst_Characters.findIndex((lrow_SuperHero: IModelCharacter) => lrow_SuperHero.id === pSuperHeroId);
-    if (lSuperHeroIndex !== -1) {
-      this._lst_Characters.splice(lSuperHeroIndex, 1); 
-      localStorage.setItem('characters', JSON.stringify(this._lst_Characters));
-    }
-  }
   
 
   handleClickNewHero(): void {

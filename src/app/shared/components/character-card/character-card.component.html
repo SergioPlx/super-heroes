@@ -22,16 +22,19 @@
                         class="flex-auto md:flex-initial white-space-nowrap"
                         icon="pi pi-pencil"                                        
                         severity="success" 
-                        (click)="handleClickEdit(row_Character.id)"/>
+                        (onClick)="handleClickEdit(row_Character.id)"/>
 
                     <p-button 
                         alt="Button Delete super hero"    
                         class="flex-auto md:flex-initial white-space-nowrap"
                         icon="pi pi-trash" 
                         severity="danger" 
-                        (click)="handleClickDelete(row_Character.id)"/>
+                        (onClick)="handleClickDelete($event, row_Character.id)"/>
+
+                        <p-confirmDialog />
                 </div>
             </div>
         </div>
     </div>
 </div>
+
