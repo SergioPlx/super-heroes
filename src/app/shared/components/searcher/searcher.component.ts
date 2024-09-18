@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { TextCapitalizeDirective } from '../../directives/text-capitalize/text-capitalize.directive';
 
 @Component({
   selector: 'searcher',
@@ -14,6 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
     InputGroupModule,
     InputGroupAddonModule,
     InputTextModule,
+    TextCapitalizeDirective
   ],
   templateUrl: './searcher.component.html',
   styleUrl: './searcher.component.css'
