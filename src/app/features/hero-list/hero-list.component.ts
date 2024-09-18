@@ -29,6 +29,7 @@ import { SearcherComponent } from '../../shared/components/searcher/searcher.com
 export class HeroListComponent implements OnInit {
 
   private _lst_Characters: IModelCharacter[] = [];
+  private _textSearched: string = '';
 
   public vPaginator: IModelCustomResponse = <IModelCustomResponse>{};
 
@@ -109,12 +110,12 @@ export class HeroListComponent implements OnInit {
 
   handleSearch(pTextSearch: string): void {    
     this.getCharacterList(0, pTextSearch);
-    // this.vSearchText = '';
+    this._textSearched = pTextSearch;
   }
 
   handlePage(pEvent:  DataViewPageEvent): void {     
     this.vIsLoaded = false;       
-    // this.getCharacterList(pEvent.first, this.vSearchText);
+    this.getCharacterList(pEvent.first, this._textSearched);
   }
 
   // TODO: Refactor to use api

@@ -27,4 +27,6 @@ export class SearcherComponent {
     this.voutput_onSearch.emit(this.vSearchText)
     // this.vSearchText = '';
   }
+
+  //TODO: Add reset filter button
 }
