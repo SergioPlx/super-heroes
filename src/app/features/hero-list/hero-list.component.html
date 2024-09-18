@@ -40,7 +40,11 @@
             <ng-template pTemplate="list" let-characters>
                 <div class="grid grid-nogutter">
                     @for(character of characters; track character.id) {
-                        <character-card [vinput_rowCharacter]="character" class="w-full"></character-card>
+                        <character-card 
+                            class="w-full"
+                            [vinput_rowCharacter]="character"  
+                            (voutput_onEdit)="handleClickEdit($event)"
+                            (voutput_onDelete)="handleClickDelete($event)"/>
                     }
                 </div>
             </ng-template>

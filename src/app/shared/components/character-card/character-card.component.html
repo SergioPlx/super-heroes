@@ -19,15 +19,17 @@
             <div class="flex flex-column md:align-items-end gap-5">                            
                 <div class="flex flex-row-reverse md:flex-row gap-2">                                
                     <p-button 
-                    class="flex-auto md:flex-initial white-space-nowrap"
-                    icon="pi pi-pencil"                                        
-                    severity="success" />
+                        class="flex-auto md:flex-initial white-space-nowrap"
+                        icon="pi pi-pencil"                                        
+                        severity="success" 
+                        (click)="handleClickEdit(row_Character.id)"/>
 
                     <p-button 
                         alt="Button Delete super hero"    
                         class="flex-auto md:flex-initial white-space-nowrap"
                         icon="pi pi-trash" 
-                        severity="danger" />
+                        severity="danger" 
+                        (click)="handleClickDelete(row_Character.id)"/>
                 </div>
             </div>
         </div>

@@ -19,8 +19,7 @@ import { CharacterCardComponent } from '../../shared/components/character-card/c
   imports: [
     FormsModule,
     ButtonModule,
-    DataViewModule,
-    ProgressSpinnerModule,
+    DataViewModule,    
     InputGroupModule,
     InputGroupAddonModule,
     InputTextModule,
@@ -51,7 +50,7 @@ export class HeroListComponent implements OnInit {
     const characters: any = localStorage.getItem('characters');    
     this._lst_Characters = JSON.parse(characters) || [];
 
-
+    // TODO: Refactor to use api
     if (!this.lst_Characters.length) {
       this.getCharacterList();
     } else {
@@ -72,6 +71,7 @@ export class HeroListComponent implements OnInit {
     }
   }
 
+  // TODO: Refactor to use service
   getCharacterList(pOffset: number = 0, pSuperHeroName: string = ''): void {    
 
     const llst_CopyCharacters: IModelCharacter[] = [];
@@ -122,16 +122,19 @@ export class HeroListComponent implements OnInit {
     this.getCharacterList(pEvent.first, this.vSearchText);
   }
 
+  // TODO: Refactor to use api
   handleClickEdit(pSuperHeroId: number): void {
     this._router.navigate(['heroDetail', pSuperHeroId]);
   }
 
+  // TODO: Refactor to use api
   handleClickDelete(pSuperHeroId: number): void {
     localStorage.setItem('deleteSuperHero' + pSuperHeroId, JSON.stringify(pSuperHeroId));
 
     this.onDeleteSuperHero(pSuperHeroId);
   }
 
+  // TODO: Refactor to use api
   onDeleteSuperHero(pSuperHeroId: number): void {
     const lSuperHeroIndex: number = this.lst_Characters.findIndex((lrow_SuperHero: IModelCharacter) => lrow_SuperHero.id === pSuperHeroId);
     if (lSuperHeroIndex !== -1) {
