@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
-import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form/charecter-form.component';
+import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form.component';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 

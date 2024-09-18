@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, Sanitizer, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IModelCharacter } from '../../../../interfaces/character/character.interface';
+import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileBeforeUploadEvent, FileSelectEvent, FileUploadModule, UploadEvent } from 'primeng/fileupload';
