@@ -1,27 +1,42 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { IModelCustomResponse } from '../../../interfaces/customResponse/custom-response.interface';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CharactersService {
 
-  constructor(private _http: HttpClient) { }
+  constructor(
+    private _http: HttpClient,
+    private _storage: StorageService
+  ) { }
 
+  // TODO: Pass object in params against of params
   getCharactersList(pOffset: number = 0, pSuperHeroName: string = ''): Observable<IModelCustomResponse> {
     let url: string = `${environment.baseUrl}characters?offset=${pOffset}&limit=10&apikey=${environment.SECRET_KEY}`;
     if (pSuperHeroName.length > 0) url += `&nameStartsWith=${pSuperHeroName}`;
     return this._http.get<any[]>(url)
       .pipe(
-        map((result: any) => {
-          result.data.results = this._mapResponse(result);
-          return result.data
+        map((result: any) => {          
+          const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');                    
+          if (!llstCharacters || !llstCharacters.length) {
+            result.data.results = this._mapResponse(result);
+            this._storage.setItem('lstCharacters', result.data.results);
+            return result.data
+          }
+          return llstCharacters;
         }
-      ));
+      ),
+      catchError(err => {
+        // TODO: Intercep errors and how notification
+        return []
+      })
+    );
   }
 
   getCharacterById(pSuperHeroId: string | null): Observable<IModelCustomResponse> {
