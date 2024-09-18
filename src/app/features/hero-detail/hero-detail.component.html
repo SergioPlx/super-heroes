@@ -1,88 +1,32 @@
-<div class="grid pt-3">
-    <div class="col-12">
-        <button 
-            alt="Button back to list"
-            class="ml-3 mr-2"
-            pButton 
-            pRipple 
-            icon="pi pi-arrow-left"                     
-            severity="warning"            
-            (click)="handleClickBack()">
-        </button>
 
-        <button 
-            alt="Button save super hero"            
-            pButton 
-            pRipple 
-            icon="pi pi-save"                     
-            severity="warning"
-            [disabled]="formGroup && !formGroup.valid"
-            (click)="handleClickSave()">
-        </button>
+    <div class="grid pt-3">
+        <div class="col-12">
+            <button 
+                alt="Button back to list"
+                class="ml-3 mr-2"
+                pButton 
+                pRipple 
+                icon="pi pi-arrow-left"                     
+                severity="warning"            
+                (click)="handleClickBack()">
+            </button>
+
+            <button 
+                alt="Button save super hero"            
+                pButton 
+                pRipple 
+                icon="pi pi-save"                     
+                severity="warning"    
+                [disabled]="!isValid"                       
+                (click)="handleClickSave()">
+            </button>
+        </div>
     </div>
-</div>
 
-<div class="grid">
-    <div class="col-12">
-        <form enctype="multipart/form-data" [formGroup]="formGroup">
-            <div class="grid">
-                <div class="col-3 md:col-4 sm:col-12">
-                    <img class="block xl:block mx-auto border-round hero-image" 
-                        (onerror)="'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'"
-                        [src]="row_SuperHero.image || 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'" 
-                        [alt]="row_SuperHero.name" 
-                        #ctrlSuperHeroImage/>  
-
-                        <!--
-                        <div class="text-center pt-3">
-                            <p-fileUpload 
-                                styleClass="w-full"
-                                mode="basic" 
-                                chooseLabel="Choose" 
-                                chooseIcon="pi pi-upload"                            
-                                accept="image/*" 
-                                maxFileSize="1000000" 
-                                (onSelect)="handleUploadFile($event)" />
-                        </div>
-                        -->
-                </div>
-
-                <div class="col md:col-8 sm:col-12">
-                    <div class="field">
-                        <label 
-                            alt="Super Hero Name"
-                            class="text-white"
-                            for="txtSuperHeroName">
-                            Name: 
-                        </label>
-
-                        <input 
-                            id="txtSuperHeroName"
-                            name="txtSuperHeroName"
-                            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                            formControlName="name"   
-                            pInputText
-                            type="text" />
-                    </div>
-
-                    <div class="field">
-                        <label 
-                            alt="Super Hero Description"
-                            class="text-white"
-                            for="txtSuperHeroDescription">
-                            Description: 
-                        </label>
-
-                        <textarea 
-                            rows="5" 
-                            cols="30" 
-                            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"
-                            pInputTextarea 
-                            formControlName="description">
-                        </textarea>    
-                    </div>
-                </div>
-            </div>
-        </form>
+    <div class="grid">
+        <div class="col-12">
+            <charecter-form 
+                [vinput_rowSuperHero]="row_SuperHero" 
+                #ctrlCharacterForm />
+        </div>
     </div>
-</div>

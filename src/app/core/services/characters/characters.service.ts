@@ -39,25 +39,41 @@ export class CharactersService {
     );
   }
 
-  getCharacterById(pSuperHeroId: string | null): Observable<IModelCustomResponse> {
-    let url: string = `${environment.baseUrl}characters/${pSuperHeroId}?apikey=${environment.SECRET_KEY}`;
+  getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> {
+    /*let url: string = `${environment.baseUrl}characters/${pSuperHeroId}?apikey=${environment.SECRET_KEY}`;
     return this._http.get<any[]>(url)
       .pipe(
         map((result: any) => {          
           result.data.results = this._mapResponse(result);
           return result.data
         })
-      )
+      )*/      
+      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+      const lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
+      return of(lrow_Character).pipe(delay(1000));
   }
-
-  // TODO: Add create super hero
-  postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {
-    return of()
+  
+  postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {    
+    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+    prow_SuperHero.id = this._getNextId(llstCharacters);
+    llstCharacters.push(prow_SuperHero);
+    this._storage.setItem('lstCharacters', llstCharacters);
+    return of(prow_SuperHero).pipe(delay(1000));
   }
 
   // TODO: Add update
-  updateSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {
-    return of()
+  updateSuperHero(pSuperHeroId: string | null, prow_SuperHero: IModelCharacter): Observable<any> {
+    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+    let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
+    
+    console.log(lIndex);
+    
+    if (lIndex !== -1) {
+      prow_SuperHero.id = llstCharacters[lIndex].id;
+      llstCharacters[lIndex] = {...prow_SuperHero};      
+      this._storage.setItem('lstCharacters', llstCharacters);      
+    }
+    return of(llstCharacters[lIndex]).pipe(delay(1000));  
   }
 
   //TODO: Add delete
@@ -80,5 +96,11 @@ export class CharactersService {
         description: lrow_Character.description
       }
     });
+  }
+
+ //TODO: Pass to helper
+  private _getNextId(llstCharacters: IModelCharacter[]): number {
+    const lastId: number = llstCharacters[llstCharacters.length -1].id;
+    return lastId + 1;
   }
 }
