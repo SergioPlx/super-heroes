@@ -85,9 +85,11 @@ export class HeroDetailComponent implements OnInit {
 
   private _showNotificationSuccess(): void {
     this.messageService.add(
-      { severity: 'success', 
+      { 
+        detail: 'Super hero is saved successfully',
+        life: 1500,
+        severity: 'success', 
         summary: 'Success', 
-        detail: 'Super hero is saved successfully' 
       }
     );
   }
