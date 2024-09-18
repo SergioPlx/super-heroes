@@ -1,19 +1,5 @@
 <div class="p-3">
-    <p-inputGroup class="pb-3">    
-        <input 
-            type="text" 
-            pInputText 
-            placeholder="Search super hero" 
-            class="capitalize"
-            (keyup.enter)="handleClickSearch()"
-            [(ngModel)]="vSearchText"
-            #ctrlInputSearchHero/>
-        <button type="button" 
-            pButton 
-            label="Search"
-            (click)="handleClickSearch()">
-        </button>
-    </p-inputGroup>
+    <searcher (voutput_onSearch)="handleSearch($event)"/>
 
     <button 
         alt="Button new super hero"

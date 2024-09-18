@@ -6,24 +6,19 @@ import { IModelCharacter } from '../../interfaces/character/character.interface'
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
-import { InputTextModule } from 'primeng/inputtext';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { CharacterCardComponent } from '../../shared/components/character-card/character-card.component';
+import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
-    FormsModule,
     ButtonModule,
-    DataViewModule,    
-    InputGroupModule,
-    InputGroupAddonModule,
-    InputTextModule,
-    CharacterCardComponent
+    DataViewModule,        
+    CharacterCardComponent,
+    SearcherComponent
   ],
   providers: [
     CharactersService
@@ -38,7 +33,7 @@ export class HeroListComponent implements OnInit {
   public vPaginator: IModelCustomResponse = <IModelCustomResponse>{};
 
   public vIsLoaded: boolean = false;
-  public vSearchText: string = '';
+  // public vSearchText: string = '';
 
   constructor(
     private _appCharacterService: CharactersService,
@@ -112,14 +107,14 @@ export class HeroListComponent implements OnInit {
     });
   }
 
-  handleClickSearch(): void {    
-    this.getCharacterList(0, this.vSearchText);
-    this.vSearchText = '';
+  handleSearch(pTextSearch: string): void {    
+    this.getCharacterList(0, pTextSearch);
+    // this.vSearchText = '';
   }
 
   handlePage(pEvent:  DataViewPageEvent): void {     
     this.vIsLoaded = false;       
-    this.getCharacterList(pEvent.first, this.vSearchText);
+    // this.getCharacterList(pEvent.first, this.vSearchText);
   }
 
   // TODO: Refactor to use api
