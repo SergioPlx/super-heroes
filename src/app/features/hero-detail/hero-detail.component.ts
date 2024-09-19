@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form.component';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-hero-detail',
@@ -13,6 +14,7 @@ import { MessageService } from 'primeng/api';
   imports: [
     ButtonModule,
     CharecterFormComponent,
+    ProgressSpinnerModule,
     ToastModule    
   ],
   providers: [
@@ -57,15 +59,15 @@ export class HeroDetailComponent implements OnInit {
 
   getSuperHero(): void {
     this._appCharacterService.getCharacterById(this._superHeroId)
-      .subscribe((result: IModelCharacter) => {
-        this.vIsLoaded = true;
+      .subscribe((result: IModelCharacter) => {        
         this._row_SuperHero = result;
+        this.vIsLoaded = true;
       })
   }
 
   handleClickSave(): void {    
     const lrowNewCharacter: IModelCharacter = <IModelCharacter>this.vCtrlCharacterForm.formCharacterGroup.value;
-
+    this.vIsLoaded = false;
     if (this.vIsNew) {
       this._appCharacterService.postSuperHero(lrowNewCharacter)
         .subscribe(res => {                    

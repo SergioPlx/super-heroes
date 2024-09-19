@@ -2,3 +2,7 @@
 :root {
     background-color: #334155;
 }
+
+html, body, main {
+    height: 100%;
+}
