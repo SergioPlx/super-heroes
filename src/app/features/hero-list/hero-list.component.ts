@@ -50,7 +50,7 @@ export class HeroListComponent implements OnInit {
     this.getCharacterList();
   }
   
-  getCharacterList(pOffset: number = 0, pSuperHeroName: string = ''): void {    
+  getCharacterList(): void {    
     this._appCharacterService.getCharactersList()
       .subscribe({
         next: (response: any) => {
@@ -65,11 +65,6 @@ export class HeroListComponent implements OnInit {
   handleSearch(pTextSearch: string): void {    
     // this.getCharacterList(0, pTextSearch);
     this.vTextSearched = pTextSearch;
-  }
-
-  handlePage(pEvent:  DataViewPageEvent): void {     
-    this.vIsLoaded = false;       
-    this.getCharacterList(pEvent.first, this.vTextSearched);
   }
 
   // TODO: Refactor to use api

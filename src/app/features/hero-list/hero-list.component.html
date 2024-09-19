@@ -21,8 +21,7 @@
                     [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
                     [lazy]="true"          
                     [loading]="!vIsLoaded"
-                    [loadingIcon]="'pi pi-spinner'"
-                    (onPage)="handlePage($event)"
+                    [loadingIcon]="'pi pi-spinner'"                    
                     #dv>
             <ng-template pTemplate="list" let-characters>
                 <div class="grid grid-nogutter">

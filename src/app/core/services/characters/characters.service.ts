@@ -17,9 +17,8 @@ export class CharactersService {
   ) { }
 
   // TODO: Pass object in params against of params
-  getCharactersList(pOffset: number = 0, pSuperHeroName: string = ''): Observable<IModelCharacter[]> {
-    let url: string = `${environment.baseUrl}characters?offset=${pOffset}&limit=10&apikey=${environment.SECRET_KEY}`;
-    if (pSuperHeroName.length > 0) url += `&nameStartsWith=${pSuperHeroName}`;
+  getCharactersList(): Observable<IModelCharacter[]> {
+    let url: string = `${environment.baseUrl}characters?&limit=10&apikey=${environment.SECRET_KEY}`;    
     return this._http.get<any[]>(url)
       .pipe(
         map((result: any) => {          
@@ -39,15 +38,7 @@ export class CharactersService {
     );
   }
 
-  getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> {
-    /*let url: string = `${environment.baseUrl}characters/${pSuperHeroId}?apikey=${environment.SECRET_KEY}`;
-    return this._http.get<any[]>(url)
-      .pipe(
-        map((result: any) => {          
-          result.data.results = this._mapResponse(result);
-          return result.data
-        })
-      )*/      
+  getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> { 
       const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
       const lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
       return of(lrow_Character).pipe(delay(1000));
