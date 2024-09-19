@@ -5,7 +5,6 @@ import { CardModule } from 'primeng/card';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,7 +14,7 @@ import { CommonModule } from '@angular/common';
     ButtonModule,
     CommonModule,
     CardModule,
-    ConfirmDialogModule,
+    ConfirmDialogModule
   ],
   providers: [
     ConfirmationService, 

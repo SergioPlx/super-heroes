@@ -1,10 +1,11 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, Sanitizer, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { FileBeforeUploadEvent, FileSelectEvent, FileUploadModule, UploadEvent } from 'primeng/fileupload';
+import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
 import { DomSanitizer } from '@angular/platform-browser';
+import { TextUppercaseDirective } from '../../directives/text-uppercase/text-uppercase.directive';
 
 @Component({
   selector: 'charecter-form',
@@ -13,7 +14,8 @@ import { DomSanitizer } from '@angular/platform-browser';
     FileUploadModule,
     InputTextModule,
     InputTextareaModule, 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TextUppercaseDirective
   ],
   templateUrl: './charecter-form.component.html',
   styleUrl: './charecter-form.component.css'
@@ -28,7 +30,7 @@ export class CharecterFormComponent implements OnInit, OnChanges {
 
   public formCharacterGroup: FormGroup = new FormGroup({})
 
-  constructor(private _sanitizer: DomSanitizer) {
+  constructor() {
     this._initForm();
   }
 
