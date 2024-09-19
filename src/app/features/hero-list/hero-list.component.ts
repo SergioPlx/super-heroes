@@ -5,27 +5,29 @@ import { IModelCustomResponse } from '../../interfaces/customResponse/custom-res
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
-import { InputTextModule } from 'primeng/inputtext';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { CharacterCardComponent } from '../../shared/components/character-card/character-card.component';
+import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
-    FormsModule,
-    ButtonModule,
-    DataViewModule,
-    ProgressSpinnerModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    InputTextModule
+    ButtonModule,    
+    DataViewModule,        
+    CharacterCardComponent,    
+    SearcherComponent,
+    ToastModule,
+    ValueFilterPipe
   ],
   providers: [
-    CharactersService
+    CharactersService,
+    MessageService
   ],
   templateUrl: './hero-list.component.html',
   styleUrl: './hero-list.component.css'
@@ -33,114 +35,77 @@ import { Router } from '@angular/router';
 export class HeroListComponent implements OnInit {
 
   private _lst_Characters: IModelCharacter[] = [];
-
-  public vPaginator: IModelCustomResponse = <IModelCustomResponse>{};
-
+  public vTextSearched: string = '';
+  
   public vIsLoaded: boolean = false;
-  public vSearchText: string = '';
 
   constructor(
     private _appCharacterService: CharactersService,
+    private _messageService: MessageService,
     private _router: Router
   ) {}
 
 
   ngOnInit(): void {
-    const characters: any = localStorage.getItem('characters');    
-    this._lst_Characters = JSON.parse(characters) || [];
-
-
-    if (!this.lst_Characters.length) {
-      this.getCharacterList();
-    } else {
-      const llst_UpdatedCharacters: IModelCharacter[] = JSON.parse(localStorage.getItem('updatedCharacters') || '');
-      this._lst_Characters = this._lst_Characters.map((lrow_Character: IModelCharacter) => {
-        const lIsSomeSuperHeroUpdated: boolean = llst_UpdatedCharacters.some((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
-        if (lIsSomeSuperHeroUpdated) {
-          const lrow_UpdatedCharacter: IModelCharacter = <IModelCharacter>llst_UpdatedCharacters.find((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
-          lrow_Character = {...lrow_UpdatedCharacter};          
-        }
-        return lrow_Character
-      })
-
-      this.vIsLoaded = true;
-      console.log('from cache');
-      const cachedResponse: any = localStorage.getItem('response');
-      this.vPaginator = JSON.parse(cachedResponse);
-    }
+    this.getCharacterList();
   }
-
+  
   getCharacterList(pOffset: number = 0, pSuperHeroName: string = ''): void {    
-
-    const llst_CopyCharacters: IModelCharacter[] = [];
-
-    this._appCharacterService.getCharactersList(pOffset, pSuperHeroName)
-    .subscribe({
-      next: (response: IModelCustomResponse) => {
-        console.log(response);
-        this.vPaginator = response;
-
-        const llst_UpdatedCharacters: IModelCharacter[] = JSON.parse(localStorage.getItem('updatedCharacters') || '');
-
-        response.results.forEach((lrow_Character: IModelCharacter) => {        
-          const lSuperHeroIdDeleted: any = localStorage.getItem('deleteSuperHero' + lrow_Character.id); 
-        
-          if (!lSuperHeroIdDeleted) {
-            const lIsSomeSuperHeroUpdated: boolean = llst_UpdatedCharacters.some((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
-            if (lIsSomeSuperHeroUpdated) {
-              const lrow_UpdatedCharacter: IModelCharacter = <IModelCharacter>llst_UpdatedCharacters.find((llrowUpdateSuperHero: IModelCharacter) => llrowUpdateSuperHero.id === lrow_Character.id);
-              lrow_Character = {...lrow_UpdatedCharacter};
-
-            }
-            llst_CopyCharacters.push(lrow_Character);
-            
-          }
-        })
-      
-        this._lst_Characters = [...llst_CopyCharacters];      
-        localStorage.setItem('characters', JSON.stringify(this._lst_Characters));
-        localStorage.setItem('response', JSON.stringify(response));
-      },
-      error: (err) => {
-        console.log(err);
-      },
-      complete: () => {
-        this.vIsLoaded = true;
-      }
-    });
+    this._appCharacterService.getCharactersList()
+      .subscribe({
+        next: (response: any) => {
+          this._lst_Characters = response;
+        },
+        complete:() => {
+          this.vIsLoaded = true;
+        }
+      });
   }
 
-  handleClickSearch(): void {    
-    this.getCharacterList(0, this.vSearchText);
-    this.vSearchText = '';
+  handleSearch(pTextSearch: string): void {    
+    // this.getCharacterList(0, pTextSearch);
+    this.vTextSearched = pTextSearch;
   }
 
   handlePage(pEvent:  DataViewPageEvent): void {     
     this.vIsLoaded = false;       
-    this.getCharacterList(pEvent.first, this.vSearchText);
+    this.getCharacterList(pEvent.first, this.vTextSearched);
   }
 
+  // TODO: Refactor to use api
   handleClickEdit(pSuperHeroId: number): void {
     this._router.navigate(['heroDetail', pSuperHeroId]);
   }
 
+  // TODO: Refactor to use api
   handleClickDelete(pSuperHeroId: number): void {
-    localStorage.setItem('deleteSuperHero' + pSuperHeroId, JSON.stringify(pSuperHeroId));
-
-    this.onDeleteSuperHero(pSuperHeroId);
+    this.vIsLoaded = false;
+    this._appCharacterService.deleteSuperHero(pSuperHeroId)
+      .subscribe({
+        next: (response: any) => {
+          this._lst_Characters = response;         
+        },
+        complete: () => {
+          this._showNotificationSuccess();
+          this.vIsLoaded = true;
+        }
+      });
   }
 
-  onDeleteSuperHero(pSuperHeroId: number): void {
-    const lSuperHeroIndex: number = this.lst_Characters.findIndex((lrow_SuperHero: IModelCharacter) => lrow_SuperHero.id === pSuperHeroId);
-    if (lSuperHeroIndex !== -1) {
-      this._lst_Characters.splice(lSuperHeroIndex, 1); 
-      localStorage.setItem('characters', JSON.stringify(this._lst_Characters));
-    }
-  }
-  
 
   handleClickNewHero(): void {
     this._router.navigate(['heroDetail']);
+  }
+
+  private _showNotificationSuccess(): void {
+    this._messageService.add(
+      { 
+        detail: 'Super hero is deleted successfully',
+        life: 1500,
+        severity: 'success', 
+        summary: 'Success', 
+      }
+    );
   }
 
 

@@ -1,19 +1,9 @@
-<div class="p-3">
-    <p-inputGroup class="pb-3">    
-        <input 
-            type="text" 
-            pInputText 
-            placeholder="Search super hero" 
-            class="capitalize"
-            (keyup.enter)="handleClickSearch()"
-            [(ngModel)]="vSearchText"
-            #ctrlInputSearchHero/>
-        <button type="button" 
-            pButton 
-            label="Search"
-            (click)="handleClickSearch()">
-        </button>
-    </p-inputGroup>
+<div class="w-full text-center">
+    <p class="text-6xl text-white font-bold">Super Heroes</p>
+</div>
+
+<div class="pt-0 p-6">    
+    <searcher (voutput_onSearch)="handleSearch($event)"/>
 
     <button 
         alt="Button new super hero"
@@ -25,13 +15,10 @@
         (click)="handleClickNewHero()">
     </button>
 
-
     <div class="card pt-3">
         
-        <p-dataView [rows]="10" 
-                    [paginator]="true"                    
-                    [totalRecords]="vPaginator.total"
-                    [value]="lst_Characters"
+        <p-dataView [rows]="10"                    
+                    [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
                     [lazy]="true"          
                     [loading]="!vIsLoaded"
                     [loadingIcon]="'pi pi-spinner'"
@@ -40,47 +27,16 @@
             <ng-template pTemplate="list" let-characters>
                 <div class="grid grid-nogutter">
                     @for(character of characters; track character.id) {
-                    <div class="col-12 border-top-1 surface-border">
-                        <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3">
-                            <div class="md:w-10rem relative">
-                                <img class="block xl:block mx-auto border-round w-full" 
-                                    [src]="character.image" 
-                                    [alt]="character.name" />                        
-                            </div>
-                            <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                                <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-                                    <div>                                
-                                        <div class="text-lg font-medium text-900 mt-2">
-                                            {{ character.name }}
-                                        </div>
-                                        <p>
-                                            {{character.description}}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-column md:align-items-end gap-5">                            
-                                    <div class="flex flex-row-reverse md:flex-row gap-2">                                
-                                        <p-button 
-                                        class="flex-auto md:flex-initial white-space-nowrap"
-                                        icon="pi pi-pencil"                                        
-                                        severity="success" 
-                                        (click)="handleClickEdit(character.id)"/>
-
-                                        <p-button 
-                                            alt="Button Delete super hero"    
-                                            class="flex-auto md:flex-initial white-space-nowrap"
-                                            icon="pi pi-trash" 
-                                            severity="danger" 
-                                            (click)="handleClickDelete(character.id)"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <character-card 
+                            class="w-full"
+                            [vinput_rowCharacter]="character"  
+                            (voutput_onEdit)="handleClickEdit($event)"
+                            (voutput_onDelete)="handleClickDelete($event)"/>
                     }
                 </div>
             </ng-template>
         </p-dataView>
-
     </div>
 </div>
+
+<p-toast />
