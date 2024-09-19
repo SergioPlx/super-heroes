@@ -17,7 +17,7 @@ export class CharactersService {
   ) { }
 
   // TODO: Pass object in params against of params
-  getCharactersList(pOffset: number = 0, pSuperHeroName: string = ''): Observable<IModelCustomResponse> {
+  getCharactersList(pOffset: number = 0, pSuperHeroName: string = ''): Observable<IModelCharacter[]> {
     let url: string = `${environment.baseUrl}characters?offset=${pOffset}&limit=10&apikey=${environment.SECRET_KEY}`;
     if (pSuperHeroName.length > 0) url += `&nameStartsWith=${pSuperHeroName}`;
     return this._http.get<any[]>(url)

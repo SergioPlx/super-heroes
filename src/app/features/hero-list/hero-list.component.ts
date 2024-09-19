@@ -34,7 +34,7 @@ import { MessageService } from 'primeng/api';
 })
 export class HeroListComponent implements OnInit {
 
-  private _lst_Characters: IModelCharacter[] = [];
+  lst_Characters: IModelCharacter[] = [];
   public vTextSearched: string = '';
   
   public vIsLoaded: boolean = false;
@@ -54,7 +54,7 @@ export class HeroListComponent implements OnInit {
     this._appCharacterService.getCharactersList()
       .subscribe({
         next: (response: any) => {
-          this._lst_Characters = response;
+          this.lst_Characters = response;
         },
         complete:() => {
           this.vIsLoaded = true;
@@ -83,7 +83,7 @@ export class HeroListComponent implements OnInit {
     this._appCharacterService.deleteSuperHero(pSuperHeroId)
       .subscribe({
         next: (response: any) => {
-          this._lst_Characters = response;         
+          this.lst_Characters = response;         
         },
         complete: () => {
           this._showNotificationSuccess();
@@ -106,11 +106,6 @@ export class HeroListComponent implements OnInit {
         summary: 'Success', 
       }
     );
-  }
-
-
-  get lst_Characters(): IModelCharacter[] {
-    return this._lst_Characters;
   }
 
 }
