@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { catchError, delay, interval, map, Observable, of } from 'rxjs';
+import { catchError, delay, interval, map, Observable, of, throwError } from 'rxjs';
 import { IModelCustomResponse } from '../../../interfaces/customResponse/custom-response.interface';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
@@ -32,16 +32,26 @@ export class CharactersService {
         }
       ),
       catchError(err => {
-        // TODO: Intercep errors and how notification
-        return []
+        throw []
       })
     );
   }
 
   getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> { 
-      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-      const lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
-      return of(lrow_Character).pipe(delay(1000));
+      let llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+      let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
+    
+      const lHasId = lrow_Character.id ?? null;      
+      if (!lHasId) {
+        return throwError(() => <IModelCharacter>{});
+      }      
+      return of(lrow_Character)
+        .pipe(          
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter>{}
+          })
+        );
   }
   
   postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {    
@@ -49,7 +59,13 @@ export class CharactersService {
     prow_SuperHero.id = this._getNextId(llstCharacters);
     llstCharacters.push(prow_SuperHero);
     this._storage.setItem('lstCharacters', llstCharacters);
-    return of(prow_SuperHero).pipe(delay(1000));
+    return of(prow_SuperHero)
+      .pipe(
+        delay(1000),
+        catchError(err => {
+          throw <IModelCharacter>{}
+        })
+      );
   }
 
   // TODO: Add update
@@ -57,14 +73,20 @@ export class CharactersService {
     const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
     let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
     
-    console.log(lIndex);
-    
     if (lIndex !== -1) {
       prow_SuperHero.id = llstCharacters[lIndex].id;
-      llstCharacters[lIndex] = {...prow_SuperHero};      
+      llstCharacters[lIndex] = {...prow_SuperHero};           
       this._storage.setItem('lstCharacters', llstCharacters);      
+    } else {
+      return throwError(() => <IModelCharacter>{});
     }
-    return of(llstCharacters[lIndex]).pipe(delay(1000));  
+    return of(llstCharacters[lIndex])
+      .pipe(
+        delay(1000),
+        catchError(err => {
+          throw <IModelCharacter>{}
+        })
+      );  
   }
 
   //TODO: Add delete
@@ -74,7 +96,13 @@ export class CharactersService {
       return lrowCharacter.id !== pSuperHeroId
     });
     this._storage.setItem('lstCharacters', filteredCharacters);
-    return of(filteredCharacters).pipe(delay(1000));
+    return of(filteredCharacters)
+      .pipe(
+        delay(1000),
+        catchError(err => {
+          throw <IModelCharacter>{}
+        })
+      );
   }
 
   //TODO: Pass to helper

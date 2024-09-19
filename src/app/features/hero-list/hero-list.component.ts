@@ -56,6 +56,9 @@ export class HeroListComponent implements OnInit {
         next: (response: any) => {
           this.lst_Characters = response;
         },
+        error: (err) => {
+          this._showNotificationError();          
+        },
         complete:() => {
           this.vIsLoaded = true;
         }
@@ -80,6 +83,9 @@ export class HeroListComponent implements OnInit {
         next: (response: any) => {
           this.lst_Characters = response;         
         },
+        error: (err) => {
+          this._showNotificationError();          
+        },
         complete: () => {
           this._showNotificationSuccess();
           this.vIsLoaded = true;
@@ -99,6 +105,17 @@ export class HeroListComponent implements OnInit {
         life: 1500,
         severity: 'success', 
         summary: 'Success', 
+      }
+    );
+  }
+
+  private _showNotificationError(): void {
+    this._messageService.add(
+      { 
+        detail: 'An error ocurrs',
+        life: 1500,
+        severity: 'error', 
+        summary: 'Error', 
       }
     );
   }

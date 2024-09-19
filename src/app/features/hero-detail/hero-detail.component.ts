@@ -59,9 +59,16 @@ export class HeroDetailComponent implements OnInit {
 
   getSuperHero(): void {
     this._appCharacterService.getCharacterById(this._superHeroId)
-      .subscribe((result: IModelCharacter) => {        
-        this._row_SuperHero = result;
-        this.vIsLoaded = true;
+      .subscribe({
+        next: (result: IModelCharacter) => {        
+          this._row_SuperHero = result;          
+        }, 
+        error: (err) => {                  
+          setTimeout(() => this._showNotificationError())
+        },
+        complete: () => {
+          this.vIsLoaded = true;
+        }
       })
   }
 
@@ -92,6 +99,17 @@ export class HeroDetailComponent implements OnInit {
         life: 1500,
         severity: 'success', 
         summary: 'Success', 
+      }
+    );
+  }
+
+  private _showNotificationError(): void {
+    this._messageService.add(
+      {         
+        detail: 'An error ocurrs',
+        life: 1500,        
+        severity: 'error', 
+        summary: 'Error', 
       }
     );
   }

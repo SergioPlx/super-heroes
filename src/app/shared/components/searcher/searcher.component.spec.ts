@@ -4,7 +4,7 @@ import { SearcherComponent } from './searcher.component';
 
 const lText: string = 'heroes searcher';
 
-fdescribe('SearcherComponent', () => {
+describe('SearcherComponent', () => {
   let component: SearcherComponent;
   let fixture: ComponentFixture<SearcherComponent>;
 
