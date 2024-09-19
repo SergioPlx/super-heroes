@@ -11,6 +11,8 @@ import { CharacterCardComponent } from '../../shared/components/character-card/c
 import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'hero-list',
@@ -20,10 +22,12 @@ import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pi
     DataViewModule,        
     CharacterCardComponent,    
     SearcherComponent,
+    ToastModule,
     ValueFilterPipe
   ],
   providers: [
-    CharactersService    
+    CharactersService,
+    MessageService
   ],
   templateUrl: './hero-list.component.html',
   styleUrl: './hero-list.component.css'
@@ -36,8 +40,8 @@ export class HeroListComponent implements OnInit {
   public vIsLoaded: boolean = false;
 
   constructor(
-
     private _appCharacterService: CharactersService,
+    private _messageService: MessageService,
     private _router: Router
   ) {}
 
@@ -79,18 +83,29 @@ export class HeroListComponent implements OnInit {
     this._appCharacterService.deleteSuperHero(pSuperHeroId)
       .subscribe({
         next: (response: any) => {
-          this._lst_Characters = response;            
+          this._lst_Characters = response;         
         },
         complete: () => {
+          this._showNotificationSuccess();
           this.vIsLoaded = true;
         }
       });
   }
 
-  
 
   handleClickNewHero(): void {
     this._router.navigate(['heroDetail']);
+  }
+
+  private _showNotificationSuccess(): void {
+    this._messageService.add(
+      { 
+        detail: 'Super hero is deleted successfully',
+        life: 1500,
+        severity: 'success', 
+        summary: 'Success', 
+      }
+    );
   }
 
 

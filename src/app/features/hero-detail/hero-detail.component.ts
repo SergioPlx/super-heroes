@@ -38,7 +38,7 @@ export class HeroDetailComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
     private _appCharacterService: CharactersService,
-    private messageService: MessageService
+    private _messageService: MessageService
   ) {    
     this._activatedRoute.paramMap.subscribe({
       next: (params) => {        
@@ -86,7 +86,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   private _showNotificationSuccess(): void {
-    this.messageService.add(
+    this._messageService.add(
       { 
         detail: 'Super hero is saved successfully',
         life: 1500,
