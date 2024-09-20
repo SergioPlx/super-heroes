@@ -1,8 +1,8 @@
-<div class="w-full text-center">
-    <p class="text-6xl text-white font-bold">Super Heroes</p>
-</div>
+<div class="w-full list-header">
+    <p class="text-center text-6xl text-white font-bold">Super Heroes</p>
 
-<div class="pt-0 p-6">    
+
+  
     <searcher (voutput_onSearch)="handleSearch($event)"/>
 
     <button 
@@ -14,7 +14,8 @@
         severity="warning"
         (click)="handleClickNewHero()">
     </button>
-
+</div>
+<div class="list-content">  
     @if(vIsLoaded) {
         <div class="card pt-3">
             
