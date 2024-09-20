@@ -13,22 +13,25 @@ fdescribe('TextUppercaseDirective', () => {
   let component: TestTextUppercaseComponent;
   let fixture: ComponentFixture<TestTextUppercaseComponent>;
   let inputEl: DebugElement;
+  let directive: TextUppercaseDirective;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         TextUppercaseDirective,
         TestTextUppercaseComponent
       ]
     });      
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(TestTextUppercaseComponent);
     component = fixture.componentInstance;
     inputEl = fixture.debugElement.query(By.css('input'));
-  });
+    directive = new TextUppercaseDirective(inputEl);
+  })
 
-  it('transform text', () => {
-    const directive = new TextUppercaseDirective(inputEl);    
+  it('transform text to uppercase', () => {    
     directive.onInputText()
     fixture.detectChanges();
     const lTextUpper = inputEl.nativeElement.value;    
