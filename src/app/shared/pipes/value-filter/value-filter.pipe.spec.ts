@@ -1,7 +1,7 @@
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { ValueFilterPipe } from './value-filter.pipe';
 
-fdescribe('ValueFilterPipe', () => {
+describe('ValueFilterPipe', () => {
 
   const pipe = new ValueFilterPipe();
   const lstItems: IModelCharacter[] = [
