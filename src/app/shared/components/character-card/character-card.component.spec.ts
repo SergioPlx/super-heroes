@@ -57,4 +57,20 @@ describe('CharacterCardComponent', () => {
     buttonDelete.click();
   });
 
+  it('should check character card has an image', () => {
+    const lCardImg = fixture.nativeElement.querySelector('img');
+    expect(lCardImg).toBeTruthy();
+  });
+
+  it('should get card buttons', () => {
+    const lCardButtons = fixture.nativeElement.getElementsByTagName('p-button');    
+    expect(lCardButtons).toBeTruthy();
+    expect([].slice.call(lCardButtons).length).toBe(2);
+  });
+
+  it('should has a confirm dialog', ()=> {
+    const lConfirmDialog = fixture.nativeElement.querySelector('p-confirmDialog');
+    expect(lConfirmDialog).toBeTruthy();
+  })
+
 });
