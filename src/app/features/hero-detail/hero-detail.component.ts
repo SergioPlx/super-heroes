@@ -16,7 +16,7 @@ import { NotificationService } from '../../core/services/notifications/notificat
     ProgressSpinnerModule,
   ],
   providers: [
-    CharactersService,
+    CharactersService,    
     NotificationService
   ],
   templateUrl: './hero-detail.component.html',
@@ -35,7 +35,7 @@ export class HeroDetailComponent implements OnInit {
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
-    private _appCharacterService: CharactersService,
+    private _appCharacterService: CharactersService,    
     private _appNotificationService: NotificationService,    
   ) {    
     this._activatedRoute.paramMap.subscribe({
@@ -47,11 +47,11 @@ export class HeroDetailComponent implements OnInit {
     });    
   }
 
-  ngOnInit(): void {    
-    if (!this.vIsNew) {      
+  ngOnInit(): void {        
+   if (!this.vIsNew) {      
       this.getSuperHero();
     } else {
-      this.vIsLoaded = true;
+      this.vIsLoaded = true;      
     }
   }
 
@@ -66,7 +66,7 @@ export class HeroDetailComponent implements OnInit {
           this.handleClickBack();
         },
         complete: () => {
-          this.vIsLoaded = true;
+         this.vIsLoaded = true;         
         }
       })
   }

@@ -10,15 +10,17 @@ import { SearcherComponent } from '../../shared/components/searcher/searcher.com
 import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
 import { ToastModule } from 'primeng/toast';
 import { NotificationService } from '../../core/services/notifications/notification.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
     ButtonModule,    
+    CharacterCardComponent,   
     DataViewModule,        
-    CharacterCardComponent,    
     SearcherComponent,
+    ProgressSpinnerModule,
     ToastModule,
     ValueFilterPipe
   ],

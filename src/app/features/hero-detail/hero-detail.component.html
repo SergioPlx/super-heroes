@@ -8,8 +8,6 @@
     </h2>
 </div>
 
-
-
 @if(vIsLoaded) {
     <div class="grid pt-3">
         <div class="col-12">
@@ -34,15 +32,17 @@
             </button>
         </div>
     </div>
+
+    <div class="grid">
+        <div class="col-12">
+            <charecter-form 
+                [vinput_rowSuperHero]="row_SuperHero" 
+                #ctrlCharacterForm />
+        </div>
+    </div>    
 } @else {
     <div class="flex align-items-center justify-content-center w-full h-full">
         <p-progressSpinner ariaLabel="loading" />
     </div>
-}
-<div class="grid">
-    <div class="col-12">
-        <charecter-form 
-            [vinput_rowSuperHero]="row_SuperHero" 
-            #ctrlCharacterForm />
-    </div>
-</div>
+} 
+

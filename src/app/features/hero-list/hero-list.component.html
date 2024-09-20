@@ -15,27 +15,29 @@
         (click)="handleClickNewHero()">
     </button>
 
-    <div class="card pt-3">
-        
-        <p-dataView [rows]="10"                    
-                    [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
-                    [lazy]="true"          
-                    [loading]="!vIsLoaded"
-                    [loadingIcon]="'pi pi-spinner'"                    
-                    #dv>
-            <ng-template pTemplate="list" let-characters>
-                <div class="grid grid-nogutter">
-                    @for(character of characters; track character.id) {
-                        <character-card 
-                            class="w-full"
-                            [vinput_rowCharacter]="character"  
-                            (voutput_onEdit)="handleClickEdit($event)"
-                            (voutput_onDelete)="handleClickDelete($event)"/>
-                    }
-                </div>
-            </ng-template>
-        </p-dataView>
-    </div>
+    @if(vIsLoaded) {
+        <div class="card pt-3">
+            
+            <p-dataView [rows]="10"                    
+                        [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
+                        [lazy]="true"
+                        #dv>
+                <ng-template pTemplate="list" let-characters>
+                    <div class="grid grid-nogutter">
+                        @for(character of characters; track character.id) {
+                            <character-card 
+                                class="w-full"
+                                [vinput_rowCharacter]="character"  
+                                (voutput_onEdit)="handleClickEdit($event)"
+                                (voutput_onDelete)="handleClickDelete($event)"/>
+                        }
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    } @else {
+        <div class="flex align-items-center justify-content-center w-full h-full">
+            <p-progressSpinner ariaLabel="loading" />
+        </div>
+    }
 </div>
-
-<!--<p-toast />-->
