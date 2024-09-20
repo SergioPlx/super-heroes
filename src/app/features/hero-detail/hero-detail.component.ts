@@ -4,9 +4,8 @@ import { CharactersService } from '../../core/services/characters/characters.ser
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
 import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form.component';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { NotificationService } from '../../core/services/notifications/notification.service';
 
 @Component({
   selector: 'app-hero-detail',
@@ -15,11 +14,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ButtonModule,
     CharecterFormComponent,
     ProgressSpinnerModule,
-    ToastModule    
   ],
   providers: [
     CharactersService,
-    MessageService
+    NotificationService
   ],
   templateUrl: './hero-detail.component.html',
   styleUrl: './hero-detail.component.css'
@@ -38,7 +36,7 @@ export class HeroDetailComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
     private _appCharacterService: CharactersService,
-    private _messageService: MessageService
+    private _appNotificationService: NotificationService,    
   ) {    
     this._activatedRoute.paramMap.subscribe({
       next: (params) => {        
@@ -63,8 +61,9 @@ export class HeroDetailComponent implements OnInit {
         next: (result: IModelCharacter) => {        
           this._row_SuperHero = result;          
         }, 
-        error: (err) => {                  
-          setTimeout(() => this._showNotificationError())
+        error: (err) => {                            
+          this._appNotificationService.error('An error ocurred while getting the hero');
+          this.handleClickBack();
         },
         complete: () => {
           this.vIsLoaded = true;
@@ -77,13 +76,15 @@ export class HeroDetailComponent implements OnInit {
     this.vIsLoaded = false;
     if (this.vIsNew) {
       this._appCharacterService.postSuperHero(lrowNewCharacter)
-        .subscribe(res => {                    
-            this._showNotificationSuccess();
+        .subscribe(res => {                                
+            this._appNotificationService.success('Super hero is saved successfully');
+            this.handleClickBack();
         });
     } else {
       this._appCharacterService.updateSuperHero(this._superHeroId, lrowNewCharacter)
         .subscribe(res => {                    
-          this._showNotificationSuccess();
+          this._appNotificationService.success('Super hero is updated successfully')
+          this.handleClickBack();
         })
     }
   }
@@ -91,30 +92,6 @@ export class HeroDetailComponent implements OnInit {
   handleClickBack(): void {    
     this._router.navigate(['heroList']);
   }
-
-  private _showNotificationSuccess(): void {
-    this._messageService.add(
-      { 
-        detail: 'Super hero is saved successfully',
-        life: 1500,
-        severity: 'success', 
-        summary: 'Success', 
-      }
-    );
-  }
-
-  private _showNotificationError(): void {
-    this._messageService.add(
-      {         
-        detail: 'An error ocurrs',
-        life: 1500,        
-        severity: 'error', 
-        summary: 'Error', 
-      }
-    );
-  }
-  
-  // TODO: Manage errors
 
   get row_SuperHero(): IModelCharacter {
     return this._row_SuperHero;

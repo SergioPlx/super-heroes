@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { catchError, delay, interval, map, Observable, of, throwError } from 'rxjs';
-import { IModelCustomResponse } from '../../../interfaces/customResponse/custom-response.interface';
+import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
 
@@ -16,7 +15,6 @@ export class CharactersService {
     private _storage: StorageService
   ) { }
 
-  // TODO: Pass object in params against of params
   getCharactersList(): Observable<IModelCharacter[]> {
     let url: string = `${environment.baseUrl}characters?&limit=10&apikey=${environment.SECRET_KEY}`;    
     return this._http.get<any[]>(url)
