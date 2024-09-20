@@ -13,11 +13,11 @@ export const routes: Routes = [
         component: HeroListComponent
     },
     {
-        path: 'heroDetail',
+        path: 'hero/new',
         component: HeroDetailComponent
     },
     {
-        path: 'heroDetail/:id',
+        path: 'hero/:id',
         component: HeroDetailComponent
     }
 

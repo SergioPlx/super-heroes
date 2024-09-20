@@ -69,7 +69,7 @@ export class HeroListComponent implements OnInit {
   }
   
   handleClickEdit(pSuperHeroId: number): void {
-    this._router.navigate(['heroDetail', pSuperHeroId]);
+    this._router.navigate(['hero', pSuperHeroId]);
   }
 
   handleClickDelete(pSuperHeroId: number): void {
@@ -90,6 +90,6 @@ export class HeroListComponent implements OnInit {
   }
 
   handleClickNewHero(): void {
-    this._router.navigate(['heroDetail']);
+    this._router.navigate(['hero', 'new']);
   }
 }
