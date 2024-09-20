@@ -12,3 +12,8 @@ html, body, main {
     height: 100%;
     overflow: hidden;
 }
+
+.error-message {
+    color: red;
+    font-size: 10px;
+}

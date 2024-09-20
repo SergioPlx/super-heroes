@@ -4,13 +4,14 @@ import { IModelCharacter } from '../../../interfaces/character/character.interfa
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
-import { DomSanitizer } from '@angular/platform-browser';
 import { TextUppercaseDirective } from '../../directives/text-uppercase/text-uppercase.directive';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'charecter-form',
   standalone: true,
-  imports: [
+  imports: [    
+    CommonModule,
     FileUploadModule,
     InputTextModule,
     InputTextareaModule, 
