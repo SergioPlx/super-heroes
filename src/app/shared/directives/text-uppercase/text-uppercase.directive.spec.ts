@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
 })
 class TestTextUppercaseComponent{}
 
-fdescribe('TextUppercaseDirective', () => {  
+describe('TextUppercaseDirective', () => {  
   let component: TestTextUppercaseComponent;
   let fixture: ComponentFixture<TestTextUppercaseComponent>;
   let inputEl: DebugElement;
@@ -29,7 +29,7 @@ fdescribe('TextUppercaseDirective', () => {
     component = fixture.componentInstance;
     inputEl = fixture.debugElement.query(By.css('input'));
     directive = new TextUppercaseDirective(inputEl);
-  })
+  });
 
   it('transform text to uppercase', () => {    
     directive.onInputText()
