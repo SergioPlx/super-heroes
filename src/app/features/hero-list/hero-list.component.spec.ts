@@ -7,6 +7,7 @@ import { CharactersService } from '../../core/services/characters/characters.ser
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { MessageService } from 'primeng/api';
 
 const mockListSuperHero: IModelCharacter[] = [
   {id: 1, name: 'Test 1', description: 'desc1', image: ''}  
@@ -36,7 +37,8 @@ describe('HeroListComponent', () => {
         {
           provide: CharactersService,
           useValue: mockedCharacterService
-        }
+        },
+        MessageService
       ]
     })
     .compileComponents();

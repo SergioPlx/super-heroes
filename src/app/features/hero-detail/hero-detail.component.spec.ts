@@ -4,6 +4,7 @@ import { HeroDetailComponent } from './hero-detail.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MessageService } from 'primeng/api';
 
 describe('HeroDetailComponent', () => {
   let component: HeroDetailComponent;
@@ -14,7 +15,8 @@ describe('HeroDetailComponent', () => {
       imports: [HeroDetailComponent, RouterTestingModule],
       providers: [
         provideHttpClient(),
-        provideHttpClientTesting()
+        provideHttpClientTesting(),
+        MessageService
       ]
     })
     .compileComponents();
