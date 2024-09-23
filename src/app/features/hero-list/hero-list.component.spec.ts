@@ -61,14 +61,14 @@ describe('HeroListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [           
-        HeroListComponent,
-        RouterTestingModule
+        HeroListComponent,        
       ],
       providers: [        
         provideHttpClient(),    
         provideHttpClientTesting(), 
         provideRouter([
-          {path: 'hero/:id', component: HeroDetailComponent}
+          {path: 'hero/:id', component: HeroDetailComponent},
+          {path: 'hero/new', component: HeroDetailComponent}
         ]),    
         {
           provide: CharactersService,

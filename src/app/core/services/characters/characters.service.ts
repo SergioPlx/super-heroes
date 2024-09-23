@@ -36,6 +36,7 @@ export class CharactersService {
   }
 
   getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> { 
+    try {
       let llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
       let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
     
@@ -50,6 +51,9 @@ export class CharactersService {
             throw <IModelCharacter>{}
           })
         );
+    } catch(e) {
+      return throwError(() => <IModelCharacter>{});
+    }
   }
   
   postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {    
