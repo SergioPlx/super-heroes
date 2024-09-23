@@ -39,7 +39,7 @@ const mockedCharacterService: {
 }*/
 
 
-fdescribe('HeroDetailComponent', () => {
+describe('HeroDetailComponent', () => {
   let component: HeroDetailComponent;
   let fixture: ComponentFixture<HeroDetailComponent>;
   let appCharacterService: CharactersService;
