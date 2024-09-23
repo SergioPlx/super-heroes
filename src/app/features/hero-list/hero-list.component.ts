@@ -21,7 +21,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     DataViewModule,        
     SearcherComponent,
     ProgressSpinnerModule,
-    ToastModule,
+    // ToastModule,
     ValueFilterPipe
   ],
   providers: [
@@ -52,7 +52,7 @@ export class HeroListComponent implements OnInit {
   getCharacterList(): void {    
     this._appCharacterService.getCharactersList()
       .subscribe({
-        next: (response: any) => {
+        next: (response: any) => {          
           this.lst_Characters = response;
         },
         error: (err) => {
@@ -76,7 +76,7 @@ export class HeroListComponent implements OnInit {
     this.vIsLoaded = false;
     this._appCharacterService.deleteSuperHero(pSuperHeroId)
       .subscribe({
-        next: (response: any) => {
+        next: (response: any) => {          
           this.lst_Characters = response;         
         },
         error: (err) => {          

@@ -16,12 +16,12 @@ export class CharactersService {
   ) { }
 
   getCharactersList(): Observable<IModelCharacter[]> {
-    let url: string = `${environment.baseUrl}characters?&limit=10&apikey=${environment.SECRET_KEY}`;    
+    let url: string = `${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`;    
     return this._http.get<any[]>(url)
       .pipe(
         map((result: any) => {          
           const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');                    
-          if (!llstCharacters || !llstCharacters.length) {
+          if (!llstCharacters || !llstCharacters.length) {            
             result.data.results = this._mapResponse(result);
             this._storage.setItem('lstCharacters', result.data.results);
             return result.data.results
@@ -88,19 +88,23 @@ export class CharactersService {
   }
 
   //TODO: Add delete
-  deleteSuperHero(pSuperHeroId: number): Observable<any> {
-    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-    const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lrowCharacter: IModelCharacter) => {
-      return lrowCharacter.id !== pSuperHeroId
-    });
-    this._storage.setItem('lstCharacters', filteredCharacters);
-    return of(filteredCharacters)
-      .pipe(
-        delay(1000),
-        catchError(err => {
-          throw <IModelCharacter>{}
-        })
-      );
+  deleteSuperHero(pSuperHeroId: number): Observable<any> {    
+    try {
+      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+      const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lrowCharacter: IModelCharacter) => {
+        return lrowCharacter.id !== pSuperHeroId
+      });
+      this._storage.setItem('lstCharacters', filteredCharacters);
+      return of(filteredCharacters)
+        .pipe(
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter>{}
+          })
+        );
+    } catch(e) {      
+      return throwError(() => e);
+    }
   }
 
   //TODO: Pass to helper

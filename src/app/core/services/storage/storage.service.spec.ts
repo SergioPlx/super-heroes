@@ -4,19 +4,9 @@ import { StorageService } from './storage.service';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 
 
-const mockListObject: IModelCharacter[] = [
-  {
-    id: 1,
-    name: 'object 1',
-    description: 'description 1',
-    image: ''
-  },
-  {
-    id: 2,
-    name: 'object 2',
-    description: 'description 2',
-    image: ''
-  },  
+const mockListSuperHero: IModelCharacter[] = [
+  {id: 1, name: 'Test 1', description: 'Test 1 Desc', image: ''},  
+  {id: 2, name: 'Test 2', description: 'Test 2 Desc', image: ''}
 ];
 
 const lKeyToSaveItem: string = 'lstCharacters';
@@ -34,7 +24,7 @@ describe('StorageService', () => {
   });
 
   it('should set item on storage', () => {    
-    service.setItem(lKeyToSaveItem, mockListObject);
-    expect(service.getItem(lKeyToSaveItem)).toEqual(mockListObject);    
+    service.setItem(lKeyToSaveItem, mockListSuperHero);
+    expect(service.getItem(lKeyToSaveItem)).toEqual(mockListSuperHero);    
   });
 });
