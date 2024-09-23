@@ -82,7 +82,7 @@ export class HeroDetailComponent implements OnInit {
         });
     } else {
       this._appCharacterService.updateSuperHero(this._superHeroId, lrowNewCharacter)
-        .subscribe(res => {                    
+        .subscribe(res => {          
           this._appNotificationService.success('Super hero is updated successfully')
           this.handleClickBack();
         })

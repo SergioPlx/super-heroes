@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 
 import { HeroDetailComponent } from './hero-detail.component';
 import { provideHttpClient } from '@angular/common/http';
@@ -27,21 +27,17 @@ const mockListSuperHero: IModelCharacter[] = [
 
 const mockedCharacterService: {
   getCharacterById: () => Observable<IModelCharacter>,  
+  updateSuperHero: (pSuperHeroId: number, lrowNewCharacter: IModelCharacter) => Observable<IModelCharacter>
 } = {
   getCharacterById: () => of(mockSuperHero),  
+  updateSuperHero: (pSuperHeroId: number, lrowNewCharacter: IModelCharacter) => of(mockSuperHero)
 }
-
-/*export function findComponent<T>(
-  fixture: ComponentFixture<T>,
-  selector: string,
-): DebugElement {
-  return fixture.debugElement.query(By.css(selector));
-}*/
-
 
 describe('HeroDetailComponent', () => {
   let component: HeroDetailComponent;
+  let childComponent: CharecterFormComponent;
   let fixture: ComponentFixture<HeroDetailComponent>;
+  let fixtureChild: ComponentFixture<CharecterFormComponent>;
   let appCharacterService: CharactersService;
   let httpTesting: HttpTestingController;
   let router: Router;
@@ -76,20 +72,27 @@ describe('HeroDetailComponent', () => {
       ]
     })
     .compileComponents();
-
     appCharacterService = TestBed.inject(CharactersService);
     httpTesting = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
   });
 
-  beforeEach(() => {
+  beforeEach(() => {    
     fixture = TestBed.createComponent(HeroDetailComponent);
+    fixtureChild = TestBed.createComponent(CharecterFormComponent);
     component = fixture.componentInstance;           
+    childComponent = fixtureChild.componentInstance;
   });
 
   it('should create', () => {    
     expect(component).toBeTruthy();
   });
+
+  it('should be a new hero', () => {
+    component.vIsNew = true;
+    fixture.detectChanges();
+    expect(component.vIsNew).toBeTrue();
+  })
 
   it('should get character data, getSuperHero()', fakeAsync(() => { 
     localStorage.setItem('lstCharacters', JSON.stringify(mockListSuperHero));
@@ -115,12 +118,39 @@ describe('HeroDetailComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['heroList']);
   });
 
-  /*it('should click save, handleClickSave()', () => {
-    fixture.detectChanges();
-    console.log(fixture);
-    const lForm =  findComponent(fixture, 'charecter-form');
-    expect(lForm).toBeTruthy();
+  it('should click save when edit super hero, handleClickSave()', fakeAsync(() => {
+    localStorage.setItem('lstCharacters', JSON.stringify(mockListSuperHero));
+    fixture.detectChanges(); 
+    fixture.componentInstance.vCtrlCharacterForm = childComponent;
+    fixture.componentInstance.vCtrlCharacterForm.formCharacterGroup.patchValue({
+      name: mockSuperHero.name,
+      description: mockSuperHero.description,
+      image: mockSuperHero.description
+    });
     
-  });*/
+    spyOn(router, 'navigate').and.resolveTo(true);    
+    component.handleClickSave();
+    tick(1000);
+    expect(router.navigate).toHaveBeenCalled();
+    expect(component.isValid).toBeTrue();
+  }));
+
+  it('should click save when create super hero, handleClickSave()', fakeAsync(() => {
+    localStorage.setItem('lstCharacters', JSON.stringify(mockListSuperHero));
+    fixture.detectChanges(); 
+    component.vIsNew = true;
+    fixture.componentInstance.vCtrlCharacterForm = childComponent;
+    fixture.componentInstance.vCtrlCharacterForm.formCharacterGroup.patchValue({
+      name: mockSuperHero.name,
+      description: mockSuperHero.description,
+      image: mockSuperHero.description
+    });
+    
+    spyOn(router, 'navigate').and.resolveTo(true);
+    
+    component.handleClickSave();
+    tick(1000);
+    expect(router.navigate).toHaveBeenCalled();
+  }));
 
 });

@@ -57,41 +57,48 @@ export class CharactersService {
   }
   
   postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {    
-    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-    prow_SuperHero.id = this._getNextId(llstCharacters);
-    llstCharacters.push(prow_SuperHero);
-    this._storage.setItem('lstCharacters', llstCharacters);
-    return of(prow_SuperHero)
-      .pipe(
-        delay(1000),
-        catchError(err => {
-          throw <IModelCharacter>{}
-        })
-      );
-  }
-
-  // TODO: Add update
-  updateSuperHero(pSuperHeroId: string | null, prow_SuperHero: IModelCharacter): Observable<any> {
-    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-    let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
-    
-    if (lIndex !== -1) {
-      prow_SuperHero.id = llstCharacters[lIndex].id;
-      llstCharacters[lIndex] = {...prow_SuperHero};           
-      this._storage.setItem('lstCharacters', llstCharacters);      
-    } else {
-      return throwError(() => <IModelCharacter>{});
+    try {
+      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+      prow_SuperHero.id = this._getNextId(llstCharacters);
+      llstCharacters.push(prow_SuperHero);
+      this._storage.setItem('lstCharacters', llstCharacters);
+      return of(prow_SuperHero)
+        .pipe(
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter>{}
+          })
+        );
+    } catch(e) {
+      return throwError(() => e);
     }
-    return of(llstCharacters[lIndex])
-      .pipe(
-        delay(1000),
-        catchError(err => {
-          throw <IModelCharacter>{}
-        })
-      );  
+  }
+  
+  updateSuperHero(pSuperHeroId: string | null, prow_SuperHero: IModelCharacter): Observable<any> {
+    try {
+      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');  
+      let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
+      
+      if (lIndex !== -1) {
+        prow_SuperHero.id = llstCharacters[lIndex].id;
+        llstCharacters[lIndex] = {...prow_SuperHero};           
+        this._storage.setItem('lstCharacters', llstCharacters);      
+      } else {
+        return throwError(() => <IModelCharacter>{});
+      }
+      return of(llstCharacters[lIndex])
+        .pipe(
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter>{}
+          })
+        ); 
+    } catch(e) {
+      return throwError(() => e);
+    }
   }
 
-  //TODO: Add delete
+  
   deleteSuperHero(pSuperHeroId: number): Observable<any> {    
     try {
       const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
