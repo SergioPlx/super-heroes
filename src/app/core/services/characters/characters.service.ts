@@ -19,7 +19,7 @@ export class CharactersService {
     let url: string = `${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`;    
     return this._http.get<any[]>(url)
       .pipe(
-        map((result: any) => {          
+        map((result: any) => {                  
           const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');                    
           if (!llstCharacters || !llstCharacters.length) {            
             result.data.results = this._mapResponse(result);
@@ -30,7 +30,7 @@ export class CharactersService {
         }
       ),
       catchError(err => {
-        throw []
+        throw <IModelCharacter[]>[];
       })
     );
   }
@@ -119,7 +119,7 @@ export class CharactersService {
   }
 
   //TODO: Pass to helper
-  private _mapResponse(plst_Characters: any): IModelCharacter[] {
+  private _mapResponse(plst_Characters: any): IModelCharacter[] {    
     return plst_Characters.data.results.map((lrow_Character: any) => {
       return <IModelCharacter> {
         id: lrow_Character.id,
@@ -127,7 +127,7 @@ export class CharactersService {
         name: lrow_Character.name,
         description: lrow_Character.description
       }
-    });
+    });    
   }
 
  //TODO: Pass to helper
