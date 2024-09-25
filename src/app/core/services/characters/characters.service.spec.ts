@@ -107,6 +107,17 @@ describe('CharactersService', () => {
     });
   });
 
+  it('should get error using wrong Id to get character by id, getCharacterById', (done: DoneFn) => {
+    const lHeroId: string = '3';
+    service.getCharacterById(lHeroId).subscribe({
+      next: () => {},
+      error: (e) => {
+        expect(e).toEqual(<IModelCharacter>{})
+        done();
+      }
+    })
+  });
+
   it('should save a super hero, postSuperHero()', (done: DoneFn) => {
     storage.setItem(lStorageKey, mockLstCharacters);
     const lNewSuperHero: IModelCharacter = {
@@ -119,6 +130,28 @@ describe('CharactersService', () => {
     service.postSuperHero(lNewSuperHero).subscribe((lrowSuperHero: IModelCharacter) => {
       expect(storage.getItem(lStorageKey).length).toBe(3);
       done();
+    });
+  });
+
+  it('should save new hero when de lst characters is void', (done: DoneFn) => {
+    localStorage.clear();
+    const lNewSuperHero: IModelCharacter = {
+      id: 0,
+      name: 'Test 3',
+      description: 'Desc Test 3',
+      image: DEFAULT_IMG
+    };
+
+    service.postSuperHero(lNewSuperHero).subscribe({
+      next: (lSuperHero: IModelCharacter) => {
+        expect(lSuperHero).toEqual(lNewSuperHero);
+        expect(storage.getItem(lStorageKey).length).toBe(1);
+        done();
+      },
+      error: (e) => {
+        expect(e).toEqual(<IModelCharacter[]>[])
+        done();
+      }
     });
   });
 

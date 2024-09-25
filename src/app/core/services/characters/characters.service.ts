@@ -58,7 +58,10 @@ export class CharactersService {
   
   postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {    
     try {
-      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+      let llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+
+      if (!llstCharacters) llstCharacters = <IModelCharacter[]>[];
+
       prow_SuperHero.id = this._getNextId(llstCharacters);
       llstCharacters.push(prow_SuperHero);
       this._storage.setItem('lstCharacters', llstCharacters);
@@ -66,11 +69,11 @@ export class CharactersService {
         .pipe(
           delay(1000),
           catchError(err => {
-            throw <IModelCharacter>{}
+            throw <IModelCharacter[]>[]
           })
         );
     } catch(e) {
-      return throwError(() => e);
+      return throwError(() => <IModelCharacter[]>[]);
     }
   }
   
@@ -132,7 +135,8 @@ export class CharactersService {
 
  //TODO: Pass to helper
   private _getNextId(llstCharacters: IModelCharacter[]): number {
-    const lastId: number = llstCharacters[llstCharacters.length -1].id;
+    let lastId: number = 0;
+    if (llstCharacters.length > 0) lastId = llstCharacters[llstCharacters.length -1].id;    
     return lastId + 1;
   }
 }
