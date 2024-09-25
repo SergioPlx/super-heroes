@@ -76,11 +76,12 @@ export class HeroListComponent implements OnInit {
     this.vIsLoaded = false;
     this._appCharacterService.deleteSuperHero(pSuperHeroId)
       .subscribe({
-        next: (response: any) => {          
+        next: (response: IModelCharacter[]) => {          
           this.lst_Characters = response;         
         },
         error: (err) => {          
-          this._appNotificationService.error('An error ocurrs deleting super hero');    
+          this._appNotificationService.error('An error ocurrs deleting super hero');
+          this.getCharacterList();    
         },
         complete: () => {          
           this._appNotificationService.success('Super hero is deleted successfully');
