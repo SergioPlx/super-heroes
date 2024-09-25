@@ -3,14 +3,15 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
-import { DomSanitizer } from '@angular/platform-browser';
+import { FileSelectEvent, FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { TextUppercaseDirective } from '../../directives/text-uppercase/text-uppercase.directive';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'charecter-form',
   standalone: true,
-  imports: [
+  imports: [    
+    CommonModule,
     FileUploadModule,
     InputTextModule,
     InputTextareaModule, 
@@ -23,7 +24,7 @@ import { TextUppercaseDirective } from '../../directives/text-uppercase/text-upp
 export class CharecterFormComponent implements OnInit, OnChanges {
 
   @ViewChild('ctrlSuperHeroImage', {static: false}) vCtrlSuperHeroImage!: ElementRef;
-
+  
   @Input() vinput_IsNew: boolean = false;
   @Input() vinput_IsLoaded: boolean = false;
   @Input() vinput_rowSuperHero: IModelCharacter = <IModelCharacter>{};
@@ -43,19 +44,20 @@ export class CharecterFormComponent implements OnInit, OnChanges {
     }
   }
 
-  onUpload(pEvent:  FileSelectEvent): void {        
-    this.vCtrlSuperHeroImage.nativeElement.onload = () => {
-      let imgCanvas = document.createElement('canvas');
-      let imgContext = imgCanvas.getContext('2d');
+  onUpload(pEvent:  FileSelectEvent): void {       
+    let lBase64File: string | ArrayBuffer | null;
 
-      imgCanvas.width = this.vCtrlSuperHeroImage.nativeElement.offsetWidth;
-      imgCanvas.height = this.vCtrlSuperHeroImage.nativeElement.offsetHeight;
+    for (let i: number = 0; i < pEvent.files.length; i++) {
+      let lReader: FileReader = new FileReader();
 
-      imgContext?.drawImage(this.vCtrlSuperHeroImage.nativeElement, 0, 0, this.vCtrlSuperHeroImage.nativeElement.offsetWidth, this.vCtrlSuperHeroImage.nativeElement.offsetHeight);
+      lReader.onload = (e) => {
+        lBase64File = lReader.result;
+        this.formCharacterGroup.patchValue({image: lBase64File});
+        this.row_SuperHero.image = this.formCharacterGroup.value.image;
+      }
 
-      this.formCharacterGroup.patchValue({image: imgCanvas.toDataURL('image/jpg')});
-    }    
-    this.row_SuperHero.image = URL.createObjectURL(pEvent.files[0]);
+      lReader.readAsDataURL(pEvent.files[i]);
+    }
   }
 
   private _initForm(): void {

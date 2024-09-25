@@ -1,8 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-    background-color: #334155;
+    --main-bg-color: #334155;
+    --page_padding: 125px;
+    --page-padding-bottom: 25px;
+}
+:root {
+    background-color: var(--main-bg-color);
 }
 
 html, body, main {
     height: 100%;
+    overflow: hidden;
+}
+
+.error-message {
+    color: red;
+    font-size: 10px;
 }

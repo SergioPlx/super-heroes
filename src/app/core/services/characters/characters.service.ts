@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { catchError, delay, interval, map, Observable, of } from 'rxjs';
-import { IModelCustomResponse } from '../../../interfaces/customResponse/custom-response.interface';
+import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
 
@@ -16,15 +15,13 @@ export class CharactersService {
     private _storage: StorageService
   ) { }
 
-  // TODO: Pass object in params against of params
-  getCharactersList(pOffset: number = 0, pSuperHeroName: string = ''): Observable<IModelCustomResponse> {
-    let url: string = `${environment.baseUrl}characters?offset=${pOffset}&limit=10&apikey=${environment.SECRET_KEY}`;
-    if (pSuperHeroName.length > 0) url += `&nameStartsWith=${pSuperHeroName}`;
+  getCharactersList(): Observable<IModelCharacter[]> {
+    let url: string = `${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`;    
     return this._http.get<any[]>(url)
       .pipe(
-        map((result: any) => {          
+        map((result: any) => {                  
           const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');                    
-          if (!llstCharacters || !llstCharacters.length) {
+          if (!llstCharacters || !llstCharacters.length) {            
             result.data.results = this._mapResponse(result);
             this._storage.setItem('lstCharacters', result.data.results);
             return result.data.results
@@ -33,61 +30,99 @@ export class CharactersService {
         }
       ),
       catchError(err => {
-        // TODO: Intercep errors and how notification
-        return []
+        throw <IModelCharacter[]>[];
       })
     );
   }
 
-  getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> {
-    /*let url: string = `${environment.baseUrl}characters/${pSuperHeroId}?apikey=${environment.SECRET_KEY}`;
-    return this._http.get<any[]>(url)
-      .pipe(
-        map((result: any) => {          
-          result.data.results = this._mapResponse(result);
-          return result.data
-        })
-      )*/      
-      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-      const lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
-      return of(lrow_Character).pipe(delay(1000));
+  getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> { 
+    try {
+      let llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+      let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
+    
+      const lHasId = lrow_Character.id ?? null;      
+      if (!lHasId) {
+        return throwError(() => <IModelCharacter>{});
+      }      
+      return of(lrow_Character)
+        .pipe(          
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter>{}
+          })
+        );
+    } catch(e) {
+      return throwError(() => <IModelCharacter>{});
+    }
   }
   
   postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {    
-    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-    prow_SuperHero.id = this._getNextId(llstCharacters);
-    llstCharacters.push(prow_SuperHero);
-    this._storage.setItem('lstCharacters', llstCharacters);
-    return of(prow_SuperHero).pipe(delay(1000));
-  }
+    try {
+      let llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
 
-  // TODO: Add update
-  updateSuperHero(pSuperHeroId: string | null, prow_SuperHero: IModelCharacter): Observable<any> {
-    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-    let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
-    
-    console.log(lIndex);
-    
-    if (lIndex !== -1) {
-      prow_SuperHero.id = llstCharacters[lIndex].id;
-      llstCharacters[lIndex] = {...prow_SuperHero};      
-      this._storage.setItem('lstCharacters', llstCharacters);      
+      if (!llstCharacters) llstCharacters = <IModelCharacter[]>[];
+
+      prow_SuperHero.id = this._getNextId(llstCharacters);
+      llstCharacters.push(prow_SuperHero);
+      this._storage.setItem('lstCharacters', llstCharacters);
+      return of(prow_SuperHero)
+        .pipe(
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter[]>[]
+          })
+        );
+    } catch(e) {
+      return throwError(() => <IModelCharacter[]>[]);
     }
-    return of(llstCharacters[lIndex]).pipe(delay(1000));  
+  }
+  
+  updateSuperHero(pSuperHeroId: string | null, prow_SuperHero: IModelCharacter): Observable<any> {
+    try {
+      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');  
+      let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
+      
+      if (lIndex !== -1) {
+        prow_SuperHero.id = llstCharacters[lIndex].id;
+        llstCharacters[lIndex] = {...prow_SuperHero};           
+        this._storage.setItem('lstCharacters', llstCharacters);      
+      } else {
+        return throwError(() => <IModelCharacter>{});
+      }
+      return of(llstCharacters[lIndex])
+        .pipe(
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter>{}
+          })
+        ); 
+    } catch(e) {
+      return throwError(() => e);
+    }
   }
 
-  //TODO: Add delete
-  deleteSuperHero(pSuperHeroId: number): Observable<any> {
-    const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-    const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lrowCharacter: IModelCharacter) => {
-      return lrowCharacter.id !== pSuperHeroId
-    });
-    this._storage.setItem('lstCharacters', filteredCharacters);
-    return of(filteredCharacters).pipe(delay(1000));
+  
+  deleteSuperHero(pSuperHeroId: number): Observable<any> {    
+    try {
+      const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
+      const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lrowCharacter: IModelCharacter) => {
+        return lrowCharacter.id !== pSuperHeroId
+      });
+      this._storage.setItem('lstCharacters', filteredCharacters);
+      return of(filteredCharacters)
+        .pipe(
+          delay(1000),
+          catchError(err => {
+            throw <IModelCharacter>{}
+          })
+        );
+    } catch(e) {      
+      return throwError(() => e);
+    }
   }
 
   //TODO: Pass to helper
-  private _mapResponse(plst_Characters: any): IModelCharacter[] {
+  private _mapResponse(plst_Characters: any): IModelCharacter[] {    
     return plst_Characters.data.results.map((lrow_Character: any) => {
       return <IModelCharacter> {
         id: lrow_Character.id,
@@ -95,12 +130,13 @@ export class CharactersService {
         name: lrow_Character.name,
         description: lrow_Character.description
       }
-    });
+    });    
   }
 
  //TODO: Pass to helper
   private _getNextId(llstCharacters: IModelCharacter[]): number {
-    const lastId: number = llstCharacters[llstCharacters.length -1].id;
+    let lastId: number = 0;
+    if (llstCharacters.length > 0) lastId = llstCharacters[llstCharacters.length -1].id;    
     return lastId + 1;
   }
 }

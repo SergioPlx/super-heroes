@@ -1,0 +1,17 @@
+.list-header {
+    position: fixed;
+    z-index: 1;
+    background: var(--main-bg-color);
+    padding-left: var(--page_padding);
+    padding-right: var(--page_padding);
+    padding-bottom: var(--page-padding-bottom);
+}
+.list-content {
+    padding-top: 275px;
+    height: 100%;
+    z-index: 0;
+    padding-bottom: var(--page-padding-bottom);
+    padding-left: var(--page_padding);
+    padding-right: var(--page_padding);
+    overflow: auto;
+}

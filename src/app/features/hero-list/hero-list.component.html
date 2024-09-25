@@ -1,8 +1,8 @@
-<div class="w-full text-center">
-    <p class="text-6xl text-white font-bold">Super Heroes</p>
-</div>
+<div class="w-full list-header">
+    <p class="text-center text-6xl text-white font-bold">Super Heroes</p>
 
-<div class="pt-0 p-6">    
+
+  
     <searcher (voutput_onSearch)="handleSearch($event)"/>
 
     <button 
@@ -14,29 +14,31 @@
         severity="warning"
         (click)="handleClickNewHero()">
     </button>
-
-    <div class="card pt-3">
-        
-        <p-dataView [rows]="10"                    
-                    [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
-                    [lazy]="true"          
-                    [loading]="!vIsLoaded"
-                    [loadingIcon]="'pi pi-spinner'"
-                    (onPage)="handlePage($event)"
-                    #dv>
-            <ng-template pTemplate="list" let-characters>
-                <div class="grid grid-nogutter">
-                    @for(character of characters; track character.id) {
-                        <character-card 
-                            class="w-full"
-                            [vinput_rowCharacter]="character"  
-                            (voutput_onEdit)="handleClickEdit($event)"
-                            (voutput_onDelete)="handleClickDelete($event)"/>
-                    }
-                </div>
-            </ng-template>
-        </p-dataView>
-    </div>
 </div>
-
-<p-toast />
+<div class="list-content">  
+    @if(vIsLoaded) {
+        <div class="card pt-3">
+            
+            <p-dataView [rows]="10"                    
+                        [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
+                        [lazy]="true"
+                        #dv>
+                <ng-template pTemplate="list" let-characters>
+                    <div class="grid grid-nogutter">
+                        @for(character of characters; track character.id) {
+                            <character-card 
+                                class="w-full"
+                                [vinput_rowCharacter]="character"  
+                                (voutput_onEdit)="handleClickEdit($event)"
+                                (voutput_onDelete)="handleClickDelete($event)"/>
+                        }
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    } @else {
+        <div class="flex align-items-center justify-content-center w-full h-full">
+            <p-progressSpinner ariaLabel="loading" />
+        </div>
+    }
+</div>
