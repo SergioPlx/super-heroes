@@ -1,12 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { CharactersService } from './characters.service';
-import { HttpClient, HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
-import { firstValueFrom, Observable, of } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
-import { IModelCustomResponse } from '../../../interfaces/customResponse/custom-response.interface';
+import { firstValueFrom } from 'rxjs';
 
 const DEFAULT_IMG: string = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
 const mockLstCharacters: IModelCharacter[] = [
