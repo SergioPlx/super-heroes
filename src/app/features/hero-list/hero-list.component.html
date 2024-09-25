@@ -21,7 +21,10 @@
             
             <p-dataView [rows]="10"                    
                         [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
-                        [lazy]="true"
+                        [paginator]="true"
+                        [totalRecords]="lst_Characters.length"
+                        paginatorStyleClass="border-noround"
+                        [lazy]="false"
                         #dv>
                 <ng-template pTemplate="list" let-characters>
                     <div class="grid grid-nogutter">
