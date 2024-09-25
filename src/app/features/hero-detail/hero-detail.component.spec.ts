@@ -100,7 +100,7 @@ describe('HeroDetailComponent', () => {
     component.getSuperHero();
     tick(1000);
     expect(component.row_SuperHero).toEqual(mockSuperHero);    
-    expect(component.vIsLoaded).toBeTrue();
+    expect(component.row_ViewManager.isLoaded).toBeTrue();
   }));
 
   it('should throw error getting character by id that not exist, getSuperHero()', fakeAsync(() => {

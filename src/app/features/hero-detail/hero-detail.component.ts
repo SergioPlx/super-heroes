@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { NotificationService } from '../../core/services/notifications/notification.service';
+import { ModelViewManager } from '../../models/view-manager/view-manager';
 
 @Component({
   selector: 'app-hero-detail',
@@ -29,8 +30,8 @@ export class HeroDetailComponent implements OnInit {
   private _superHeroId!: string | null;
   private _row_SuperHero: IModelCharacter = <IModelCharacter>{};
 
-  public vIsNew: boolean = true;
-  public vIsLoaded: boolean = false;
+  public vIsNew: boolean = true;  
+  public row_ViewManager: ModelViewManager = new ModelViewManager({loaded: false});
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -48,7 +49,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {        
-    (this.vIsNew) ? this._setLoading(true) : this.getSuperHero();
+    (this.vIsNew) ? this.row_ViewManager.setLoaded(true) : this.getSuperHero();
   }
 
   getSuperHero(): void {
@@ -61,24 +62,20 @@ export class HeroDetailComponent implements OnInit {
           this._appNotificationService.error('An error ocurred while getting the hero');
           this.handleClickBack();
         },
-        complete: () => this._setLoading(true)
+        complete: () => this.row_ViewManager.setLoaded(true)
       })
   }
 
   handleClickSave(): void {    
     const lrowNewCharacter: IModelCharacter = <IModelCharacter>this.vCtrlCharacterForm.formCharacterGroup.value;
-    this._setLoading(false);
+    this.row_ViewManager.setLoaded(false);
     (this.vIsNew) ? this._createSuperHero(lrowNewCharacter) : this._updateSuperHero(lrowNewCharacter);
   }
 
   handleClickBack(): void {    
     this._router.navigate(['heroList']);
   }
-
-  private _setLoading(pIsLoading: boolean): void {
-    this.vIsLoaded = pIsLoading;
-  }
-
+  
   private _createSuperHero(prowSuperHero: IModelCharacter): void {
     this._appCharacterService.postSuperHero(prowSuperHero)
     .subscribe(res => {                                

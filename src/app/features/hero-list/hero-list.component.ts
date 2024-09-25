@@ -8,9 +8,9 @@ import { Router } from '@angular/router';
 import { CharacterCardComponent } from '../../shared/components/character-card/character-card.component';
 import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
 import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
-import { ToastModule } from 'primeng/toast';
 import { NotificationService } from '../../core/services/notifications/notification.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ModelViewManager } from '../../models/view-manager/view-manager';
 
 @Component({
   selector: 'hero-list',
@@ -33,9 +33,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 export class HeroListComponent implements OnInit {
 
   lst_Characters: IModelCharacter[] = [];
-  public vTextSearched: string = '';
-  
-  public vIsLoaded: boolean = false;
+  public vTextSearched: string = '';  
+  public row_AppViewManager: ModelViewManager = new ModelViewManager({loaded: false});
 
   constructor(
     private _appCharacterService: CharactersService,
@@ -57,8 +56,8 @@ export class HeroListComponent implements OnInit {
         error: (err) => {
           this._appNotificationService.error('An error ocurrs');      
         },
-        complete:() => {
-          this.vIsLoaded = true;
+        complete:() => {          
+          this.row_AppViewManager.setLoaded(true);
         }
       });
   }
@@ -71,8 +70,8 @@ export class HeroListComponent implements OnInit {
     this._router.navigate(['hero', pSuperHeroId]);
   }
 
-  handleClickDelete(pSuperHeroId: number): void {
-    this.vIsLoaded = false;
+  handleClickDelete(pSuperHeroId: number): void {    
+    this.row_AppViewManager.setLoaded(false);
     this._appCharacterService.deleteSuperHero(pSuperHeroId)
       .subscribe({
         next: (response: IModelCharacter[]) => {          
@@ -83,8 +82,8 @@ export class HeroListComponent implements OnInit {
           this.getCharacterList();    
         },
         complete: () => {          
-          this._appNotificationService.success('Super hero is deleted successfully');
-          this.vIsLoaded = true;
+          this._appNotificationService.success('Super hero is deleted successfully');          
+          this.row_AppViewManager.setLoaded(true);
         }
       });
   }
