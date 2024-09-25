@@ -149,7 +149,7 @@ describe('CharactersService', () => {
         done();
       },
       error: (e) => {
-        expect(e).toEqual(<IModelCharacter[]>[])
+        expect(e).toEqual(<IModelCharacter>{})
         done();
       }
     });

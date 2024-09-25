@@ -76,7 +76,7 @@ export class HeroListComponent implements OnInit {
     this.vIsLoaded = false;
     this._appCharacterService.deleteSuperHero(pSuperHeroId)
       .subscribe({
-        next: (response: any) => {          
+        next: (response: IModelCharacter[]) => {          
           this.lst_Characters = response;         
         },
         error: (err) => {          

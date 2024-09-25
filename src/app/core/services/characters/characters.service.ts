@@ -56,7 +56,7 @@ export class CharactersService {
     }
   }
   
-  postSuperHero(prow_SuperHero: IModelCharacter): Observable<any> {    
+  postSuperHero(prow_SuperHero: IModelCharacter): Observable<IModelCharacter> {    
     try {
       let llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
 
@@ -69,15 +69,15 @@ export class CharactersService {
         .pipe(
           delay(1000),
           catchError(err => {
-            throw <IModelCharacter[]>[]
+            throw <IModelCharacter>{}
           })
         );
     } catch(e) {
-      return throwError(() => <IModelCharacter[]>[]);
+      return throwError(() => <IModelCharacter>{});
     }
   }
   
-  updateSuperHero(pSuperHeroId: string | null, prow_SuperHero: IModelCharacter): Observable<any> {
+  updateSuperHero(pSuperHeroId: string | null, prow_SuperHero: IModelCharacter): Observable<IModelCharacter> {
     try {
       const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');  
       let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
@@ -97,12 +97,12 @@ export class CharactersService {
           })
         ); 
     } catch(e) {
-      return throwError(() => e);
+      return throwError(() => <IModelCharacter>{});
     }
   }
 
   
-  deleteSuperHero(pSuperHeroId: number): Observable<any> {    
+  deleteSuperHero(pSuperHeroId: number): Observable<IModelCharacter[]> {    
     try {
       const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
       const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lrowCharacter: IModelCharacter) => {
@@ -113,11 +113,11 @@ export class CharactersService {
         .pipe(
           delay(1000),
           catchError(err => {
-            throw <IModelCharacter>{}
+            throw <IModelCharacter[]>[]
           })
         );
     } catch(e) {      
-      return throwError(() => e);
+      return throwError(() => <IModelCharacter[]>[]);
     }
   }
 
