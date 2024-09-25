@@ -86,16 +86,15 @@ export class CharactersService {
         prow_SuperHero.id = llstCharacters[lIndex].id;
         llstCharacters[lIndex] = {...prow_SuperHero};           
         this._storage.setItem('lstCharacters', llstCharacters);      
-      } else {
-        return throwError(() => <IModelCharacter>{});
-      }
-      return of(llstCharacters[lIndex])
+        return of(llstCharacters[lIndex])
         .pipe(
           delay(1000),
           catchError(err => {
             throw <IModelCharacter>{}
           })
-        ); 
+        );        
+      }
+      return throwError(() => <IModelCharacter>{});
     } catch(e) {
       return throwError(() => <IModelCharacter>{});
     }

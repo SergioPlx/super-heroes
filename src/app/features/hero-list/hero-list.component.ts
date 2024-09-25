@@ -20,8 +20,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     CharacterCardComponent,   
     DataViewModule,        
     SearcherComponent,
-    ProgressSpinnerModule,
-    // ToastModule,
+    ProgressSpinnerModule,    
     ValueFilterPipe
   ],
   providers: [

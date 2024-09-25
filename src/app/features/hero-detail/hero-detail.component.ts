@@ -48,11 +48,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {        
-   if (!this.vIsNew) {      
-      this.getSuperHero();
-    } else {
-      this.vIsLoaded = true;      
-    }
+    (this.vIsNew) ? this._setLoading(true) : this.getSuperHero();
   }
 
   getSuperHero(): void {
@@ -65,32 +61,38 @@ export class HeroDetailComponent implements OnInit {
           this._appNotificationService.error('An error ocurred while getting the hero');
           this.handleClickBack();
         },
-        complete: () => {
-         this.vIsLoaded = true;         
-        }
+        complete: () => this._setLoading(true)
       })
   }
 
   handleClickSave(): void {    
     const lrowNewCharacter: IModelCharacter = <IModelCharacter>this.vCtrlCharacterForm.formCharacterGroup.value;
-    this.vIsLoaded = false;
-    if (this.vIsNew) {
-      this._appCharacterService.postSuperHero(lrowNewCharacter)
-        .subscribe(res => {                                
-            this._appNotificationService.success('Super hero is saved successfully');
-            this.handleClickBack();
-        });
-    } else {
-      this._appCharacterService.updateSuperHero(this._superHeroId, lrowNewCharacter)
-        .subscribe(res => {          
-          this._appNotificationService.success('Super hero is updated successfully')
-          this.handleClickBack();
-        })
-    }
+    this._setLoading(false);
+    (this.vIsNew) ? this._createSuperHero(lrowNewCharacter) : this._updateSuperHero(lrowNewCharacter);
   }
 
   handleClickBack(): void {    
     this._router.navigate(['heroList']);
+  }
+
+  private _setLoading(pIsLoading: boolean): void {
+    this.vIsLoaded = pIsLoading;
+  }
+
+  private _createSuperHero(prowSuperHero: IModelCharacter): void {
+    this._appCharacterService.postSuperHero(prowSuperHero)
+    .subscribe(res => {                                
+        this._appNotificationService.success('Super hero is saved successfully');
+        this.handleClickBack();
+    });
+  }
+
+  private _updateSuperHero(prow_SuperHero: IModelCharacter): void {
+    this._appCharacterService.updateSuperHero(this._superHeroId, prow_SuperHero)
+      .subscribe(res => {          
+        this._appNotificationService.success('Super hero is updated successfully')
+        this.handleClickBack();
+      })
   }
 
   get row_SuperHero(): IModelCharacter {
