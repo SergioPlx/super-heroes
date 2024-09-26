@@ -11,8 +11,6 @@ import { MessageService } from 'primeng/api';
 import { NotificationService } from '../../core/services/notifications/notification.service';
 import { HeroDetailComponent } from '../hero-detail/hero-detail.component';
 import { provideRouter, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-// import { RouterTestingHarness } from '@angular/router/testing';
 
 const API_URL: string = `${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`;
 const DEFAULT_IMG: string = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
@@ -56,7 +54,7 @@ describe('HeroListComponent', () => {
   let httpTesting: HttpTestingController;
   let appCharacterService: CharactersService;
   let appNotificationService: NotificationService;  
-  let router: Router;  
+  let router: Router; 
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -104,7 +102,7 @@ describe('HeroListComponent', () => {
     const req = httpTesting.expectOne(API_URL);
     req.flush(mockApiResponse);          
     expect(component.lst_Characters).toEqual(mockListSuperHero);
-    expect(component.vIsLoaded).toBeTrue();
+    expect(component.row_AppViewManager.isLoaded).toBeTrue();
     localStorage.clear();
   });
 
@@ -134,7 +132,7 @@ describe('HeroListComponent', () => {
     component.handleClickDelete(lSuperHeroId);
     tick(1000);
     expect(component.lst_Characters.length).toEqual(1);
-    expect(component.vIsLoaded).toBeTrue();
+    expect(component.row_AppViewManager.isLoaded).toBeTrue();
     localStorage.clear();
   }));
 
