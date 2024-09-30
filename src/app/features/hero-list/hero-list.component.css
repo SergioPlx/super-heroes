@@ -15,3 +15,6 @@
     padding-right: var(--page_padding);
     overflow: auto;
 }
+::ng-deep .p-dataview-layout-options button:focus{
+    z-index: 0;
+}
