@@ -1,8 +1,6 @@
 <div class="w-full list-header">
     <p class="text-center text-6xl text-white font-bold">Super Heroes</p>
 
-
-  
     <searcher (voutput_onSearch)="handleSearch($event)"/>
 
     <button 
@@ -15,8 +13,8 @@
         (click)="handleClickNewHero()">
     </button>
 </div>
-<div class="list-content">  
-    @if(row_AppViewManager.isLoaded) {
+<div class="list-content">
+    @defer (when row_AppViewManager.isLoaded; prefetch when !row_AppViewManager.isLoaded){
         <div class="card pt-3">
             
             <p-dataView [rows]="10"                    
@@ -60,7 +58,7 @@
                 </ng-template>
             </p-dataView>
         </div>
-    } @else {
+    } @placeholder { 
         <div class="flex align-items-center justify-content-center w-full h-full">
             <p-progressSpinner ariaLabel="loading" />
         </div>

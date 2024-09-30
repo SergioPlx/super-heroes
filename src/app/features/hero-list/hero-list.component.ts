@@ -1,4 +1,4 @@
-import { Component, OnInit, Type } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {  DataViewModule } from 'primeng/dataview';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCharacter } from '../../interfaces/character/character.interface';
@@ -37,7 +37,7 @@ export class HeroListComponent implements OnInit {
   lst_Characters: IModelCharacter[] = [];
   public vTextSearched: string = '';  
   public row_AppViewManager: ModelViewManager = new ModelViewManager({loaded: false});
-
+  
   constructor(
     private _appCharacterService: CharactersService,
     private _appNotificationService: NotificationService,
@@ -52,8 +52,8 @@ export class HeroListComponent implements OnInit {
   getCharacterList(): void {    
     this._appCharacterService.getCharactersList()
       .subscribe({
-        next: (response: any) => {          
-          this.lst_Characters = response;
+        next: (llstHeroes: IModelCharacter[]) => {          
+          this.lst_Characters = llstHeroes;          
         },
         error: (err) => {
           this._appNotificationService.error('An error ocurrs');      
