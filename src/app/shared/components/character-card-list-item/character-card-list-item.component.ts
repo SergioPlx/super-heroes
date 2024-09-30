@@ -8,7 +8,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'character-card',
+  selector: 'character-card-list-item',
   standalone: true,
   imports: [
     ButtonModule,
@@ -20,10 +20,10 @@ import { CommonModule } from '@angular/common';
     ConfirmationService, 
     MessageService
   ],
-  templateUrl: './character-card.component.html',
-  styleUrl: './character-card.component.css'
+  templateUrl: './character-card-list-item.component.html',
+  styleUrl: './character-card-list-item.component.css'
 })
-export class CharacterCardComponent {
+export class CharacterCardListItemComponent {
 
   @Input() vinput_rowCharacter: IModelCharacter = <IModelCharacter>{};
 

@@ -5,7 +5,7 @@ import { IModelCharacter } from '../../interfaces/character/character.interface'
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 
-import { CharacterCardComponent } from '../../shared/components/character-card/character-card.component';
+import { CharacterCardListItemComponent } from '../../shared/components/character-card-list-item/character-card-list-item.component';
 import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
 import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
 import { NotificationService } from '../../core/services/notifications/notification.service';
@@ -17,7 +17,7 @@ import { ModelViewManager } from '../../models/view-manager/view-manager';
   standalone: true,
   imports: [
     ButtonModule,    
-    CharacterCardComponent,   
+    CharacterCardListItemComponent,   
     DataViewModule,        
     SearcherComponent,
     ProgressSpinnerModule,    

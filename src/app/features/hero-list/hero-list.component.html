@@ -29,7 +29,7 @@
                 <ng-template pTemplate="list" let-characters>
                     <div class="grid grid-nogutter">
                         @for(character of characters; track character.id) {
-                            <character-card 
+                            <character-card-list-item 
                                 class="w-full"
                                 [vinput_rowCharacter]="character"  
                                 (voutput_onEdit)="handleClickEdit($event)"

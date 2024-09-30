@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CharacterCardComponent } from './character-card.component';
+import { CharacterCardListItemComponent } from './character-card-list-item.component';
 import { ConfirmationService } from 'primeng/api';
 
 describe('CharacterCardComponent', () => {
-  let component: CharacterCardComponent;
-  let fixture: ComponentFixture<CharacterCardComponent>;
+  let component: CharacterCardListItemComponent;
+  let fixture: ComponentFixture<CharacterCardListItemComponent>;
   let confirmationService: any;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        CharacterCardComponent
+        CharacterCardListItemComponent
       ]      
     })
     .compileComponents();
@@ -18,7 +18,7 @@ describe('CharacterCardComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CharacterCardComponent);
+    fixture = TestBed.createComponent(CharacterCardListItemComponent);
     component = fixture.componentInstance;
     confirmationService = fixture.debugElement.injector.get(ConfirmationService);
     fixture.detectChanges();

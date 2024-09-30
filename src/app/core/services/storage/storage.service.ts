@@ -16,11 +16,11 @@ export class StorageService {
     return this._parseObjectToJson(lStorageObject);
   }
 
-  private _parseObjectToString(pObject: any = {}): string {
+  private _parseObjectToString(pObject: any): string {
     return JSON.stringify(pObject);
   }
 
-  private _parseObjectToJson(pObjectString: string = ''): any {
+  private _parseObjectToJson(pObjectString: string): any {
     return JSON.parse(pObjectString);
   }
 }
