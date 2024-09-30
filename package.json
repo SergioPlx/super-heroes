@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test-coverage": "ng test --code-coverage"
+    "test-coverage": "ng test --code-coverage",
+    "test-build": "ng test --no-watch && ng build"
   },
   "private": true,
   "dependencies": {
