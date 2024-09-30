@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { DataViewModule } from 'primeng/dataview';
+import { Component, OnInit, Type } from '@angular/core';
+import {  DataViewModule } from 'primeng/dataview';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
@@ -11,27 +11,29 @@ import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pi
 import { NotificationService } from '../../core/services/notifications/notification.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ModelViewManager } from '../../models/view-manager/view-manager';
+import { CharacterCardItemComponent } from '../../shared/components/character-card-item/character-card-item.component';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
     ButtonModule,    
-    CharacterCardListItemComponent,   
-    DataViewModule,        
+    CharacterCardListItemComponent,  
+    CharacterCardItemComponent, 
+    DataViewModule,            
     SearcherComponent,
     ProgressSpinnerModule,    
     ValueFilterPipe
   ],
   providers: [
     CharactersService,
-    NotificationService    
+    NotificationService  ,
   ],
   templateUrl: './hero-list.component.html',
   styleUrl: './hero-list.component.css'
 })
 export class HeroListComponent implements OnInit {
-
+  layout: any = 'list';
   lst_Characters: IModelCharacter[] = [];
   public vTextSearched: string = '';  
   public row_AppViewManager: ModelViewManager = new ModelViewManager({loaded: false});

@@ -1,0 +1,8 @@
+::ng-deep .p-card-content {
+    height: 100px;
+}
+::ng-deep .p-card-content > p {
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
