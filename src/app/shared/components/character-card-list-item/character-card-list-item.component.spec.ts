@@ -71,6 +71,6 @@ describe('CharacterCardComponent', () => {
   it('should has a confirm dialog', ()=> {
     const lConfirmDialog = fixture.nativeElement.querySelector('p-confirmDialog');
     expect(lConfirmDialog).toBeTruthy();
-  })
+  });
 
 });
