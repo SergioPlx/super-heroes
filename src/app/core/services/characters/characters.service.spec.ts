@@ -1,10 +1,11 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { CharactersService } from './characters.service';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment.development';
 
 const DEFAULT_IMG: string = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
 const mockLstCharacters: IModelCharacter[] = [
@@ -50,135 +51,205 @@ const mockResponse: any = {
     total: 2
   }
 }
+const lNewSuperHero: IModelCharacter = {
+  id: 0,
+  name: 'Test 3',
+  description: 'Desc Test 3',
+  image: DEFAULT_IMG
+};
 
 const lStorageKey: string = 'lstCharacters';
 
+const appStorageMocked: {
+  getItem: (key: string) => any,
+  setItem: (key: string, value: any) => void,
+  clear: () => void
+
+} = {
+  getItem: (key: string) => {},
+  setItem: (key: string, value: any) => {},
+  clear: () => {}
+}
+
 describe('CharactersService', () => {
-  let service: CharactersService;
-  let storage: StorageService;
-  let httpTest: HttpTestingController;
+  let service: CharactersService;  
+  let httpTest: HttpTestingController;      
+  let storage = {} as any;
 
   beforeEach(() => {    
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
-        provideHttpClientTesting(),        
-        StorageService
+        provideHttpClientTesting(),                
+        {
+          provide: StorageService,
+          useValue: appStorageMocked
+        }        
       ]
     });
 
     httpTest = TestBed.inject(HttpTestingController);
-    service = TestBed.inject(CharactersService);
-    storage = TestBed.inject(StorageService);
+    service = TestBed.inject(CharactersService);    
+    storage = TestBed.inject(StorageService);       
   });
+  
+  beforeEach(() => {    
+    spyOn(storage, 'getItem').and.callFake((key: string) => {
+      return storage[key]
+    });
+
+    spyOn(storage, 'setItem').and.callFake((key: string, value: any) => {
+      return storage[key] = value;
+    });        
+  });  
 
   beforeEach(() => {
-    storage.setItem(lStorageKey, mockLstCharacters);    
-  })
+    storage.clear();
+  });
 
+  afterEach(() => {    
+    httpTest.verify();      
+  });
+  
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-
-  it('should get character list, getCharactersList()', async() => {
-    localStorage.clear();      
-    const characterList = service.getCharactersList();
-    const configPromise = firstValueFrom(characterList);
-    const req = httpTest.expectOne({method: 'GET'});    
-    req.flush(mockResponse);
-    expect(await configPromise).toEqual(mockLstCharacters);  
+  it('should get character list successly, getCharacterList()', () => {         
+    storage.setItem(lStorageKey, null);                
+    service.getCharactersList().subscribe((response: IModelCharacter[]) => {         
+      expect(response).toEqual(mockLstCharacters);
+    });
+    
+    const req = httpTest.expectOne(`${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);    
   });
 
-  it('should get character list from cache, getCharactersList()', async() => {
+  it('get characters when local storage is full, getCharacterList()', () => {    
     storage.setItem(lStorageKey, mockLstCharacters);
-    const characterList = service.getCharactersList();
-    const configPromise = firstValueFrom(characterList);
-    const req = httpTest.expectOne({method: 'GET'});    
-    req.flush(mockResponse);
-    expect(await configPromise).toEqual(mockLstCharacters);  
+    service.getCharactersList().subscribe((response: IModelCharacter[]) => {      
+      expect(response).toEqual(mockLstCharacters);
+    });
+    const req = httpTest.expectOne(`${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`);
+    expect(req.request.method).toBe('GET');    
+    req.flush(mockLstCharacters);  
   });
 
-  it('should get heroes by id, getCharacterById()', (done: DoneFn) => {  
+  it('should get error from api call, getCharacterList()', () => {             
+    service.getCharactersList().subscribe({      
+      error: (err) => {
+        expect(err.length).toBe(0);
+      }
+    });
+    const req = httpTest.expectOne(`${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`);
+    expect(req.request.method).toBe('GET');
+    req.error(new ProgressEvent('400'));    
+  });
+
+  it('should get heroes by id, getCharacterById()', (done: DoneFn) => {      
     storage.setItem(lStorageKey, mockLstCharacters);
-    service.getCharacterById('1').subscribe((lrowModelCharacter: IModelCharacter) => {
-      expect(lrowModelCharacter).toEqual(mockLstCharacters[0]);
+    const lHeroId: string = mockLstCharacters[0].id.toString(); 
+    service.getCharacterById(lHeroId).subscribe((lrowModelCharacter: IModelCharacter) => {
+      expect(lrowModelCharacter).toEqual(mockLstCharacters[0]);      
       done();
     });
   });
 
-  it('should get error using wrong Id to get character by id, getCharacterById', (done: DoneFn) => {
-    const lHeroId: string = '3';
+  it('should return an error when hero Id not exists, getCharacterById()', () => {        
+    const lHeroId: string = '100';
+    storage.setItem(lStorageKey, mockLstCharacters);
     service.getCharacterById(lHeroId).subscribe({
-      next: () => {},
-      error: (e) => {
-        expect(e).toEqual(<IModelCharacter>{})
+      error: (err) => {                
+        expect(err).toEqual(<IModelCharacter>{});
+        expect(err.id).toBeUndefined();        
+      }
+    });    
+  });
+
+  it('should return an error there is an error on process data, getCharacterById()', () => {     
+    const lHeroId: string = mockLstCharacters[0].id.toString();    
+    storage.setItem(lStorageKey, null);
+    service.getCharacterById(lHeroId).subscribe({
+      error: (err) => {
+        expect(err).toEqual(<IModelCharacter>{});
+        expect(err.id).toBeUndefined();
+      }
+    });
+  });
+
+  it('should save a new Super Hero, postSuperHero()', (done: DoneFn) => {
+    storage.setItem(lStorageKey, null);            
+    service.postSuperHero(lNewSuperHero).subscribe(response => {
+      expect(response).toEqual(lNewSuperHero);
+      done();
+    });      
+  });
+
+  it('should add new super hero, postSuperHero()', (done: DoneFn) => {    
+    storage.setItem(lStorageKey, []);
+    service.postSuperHero(lNewSuperHero).subscribe(response => {
+      expect(storage.getItem(lStorageKey).length).toBe(1);
+      expect(response).toEqual(lNewSuperHero);
+      done();
+    });      
+  });
+
+  it('should get error when save new super hero, postSuperHero()', (done: DoneFn) => {        
+    storage.setItem(lStorageKey, 'list');
+    service.postSuperHero(lNewSuperHero).subscribe({
+      error: (err) => {        
+        expect(err.id).toBeUndefined();        
         done();
       }
     })
   });
 
-  it('should save a super hero, postSuperHero()', (done: DoneFn) => {
-    storage.setItem(lStorageKey, mockLstCharacters);
-    const lNewSuperHero: IModelCharacter = {
-      id: 0,
-      name: 'Test 3',
-      description: 'Desc Test 3',
-      image: DEFAULT_IMG
-    };
-
-    service.postSuperHero(lNewSuperHero).subscribe((lrowSuperHero: IModelCharacter) => {
-      expect(storage.getItem(lStorageKey).length).toBe(3);
+  it('should update super hero, updateSuperHero()', (done: DoneFn) => {             
+    storage.setItem(lStorageKey, mockLstCharacters);    
+    const lHeroId: string = '1'
+    service.updateSuperHero(lHeroId, mockLstCharacters[0]).subscribe(response => {            
+      expect(response).toEqual(mockLstCharacters[0]);                        
       done();
     });
   });
 
-  it('should save new hero when de lst characters is void', (done: DoneFn) => {
-    localStorage.clear();
-    const lNewSuperHero: IModelCharacter = {
-      id: 0,
-      name: 'Test 3',
-      description: 'Desc Test 3',
-      image: DEFAULT_IMG
-    };
-
-    service.postSuperHero(lNewSuperHero).subscribe({
-      next: (lSuperHero: IModelCharacter) => {
-        expect(lSuperHero).toEqual(lNewSuperHero);
-        expect(storage.getItem(lStorageKey).length).toBe(1);
-        done();
-      },
-      error: (e) => {
-        expect(e).toEqual(<IModelCharacter>{})
+  it('should try to update hero that not exists and throw exception, updateSuperHero()', (done: DoneFn) => {
+    storage.setItem(lStorageKey, mockLstCharacters);    
+    const lHeroId: string = '100'
+    service.updateSuperHero(lHeroId, mockLstCharacters[0]).subscribe({
+      error: (err) => {        
+        expect(err.id).toBeUndefined();
         done();
       }
     });
   });
 
-  it('should update super hero, updateSuperHero()', (done: DoneFn) => {
-    storage.setItem(lStorageKey, mockLstCharacters);
-    const lUpdatedSuperHero: IModelCharacter = {
-      id: 0,
-      name: 'Test 1 updated',
-      description: 'Desc Test 1 updated',
-      image: DEFAULT_IMG
-    };
-    service.updateSuperHero(mockLstCharacters[0].id.toString(), lUpdatedSuperHero)
-      .subscribe((lupdatedHero: IModelCharacter) => {
-        expect(storage.getItem(lStorageKey)[0]).toEqual(lupdatedHero);
+  it('should try to update hero that not exists and throw exception, updateSuperHero()', (done: DoneFn) => {
+    storage.setItem(lStorageKey, null);    
+    const lHeroId: string = '1'
+    service.updateSuperHero(lHeroId, lNewSuperHero).subscribe({
+      error: (err) => {
+        expect(err.id).toBeUndefined();
         done();
       }
-    );
+    });
   });
 
   it('should delete super hero, deleteSuperHero()', (done: DoneFn) => {
-    storage.setItem(lStorageKey, mockLstCharacters);
-    const lHeroId: number = 1;
-    service.deleteSuperHero(lHeroId).subscribe((lstSuperHero: IModelCharacter[]) => {
-      expect(lstSuperHero.length).toBeLessThan(mockLstCharacters.length);
-      expect(lstSuperHero.length).toBe(1);
+    storage.setItem(lStorageKey, mockLstCharacters);    
+    service.deleteSuperHero(mockLstCharacters[0].id).subscribe(response => {
+      expect(response.length).toBe(1);
       done();
     });
   });
-  
+  it('should try to delete super hero that not exists, deleteSuperHero()', (done: DoneFn) => {
+    storage.setItem(lStorageKey, null);    
+    service.deleteSuperHero(100).subscribe({
+      error: (err) => {
+        expect(err.length).toBe(0);
+        done();
+      }
+    });
+  });
 });

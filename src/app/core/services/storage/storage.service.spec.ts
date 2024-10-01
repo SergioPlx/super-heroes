@@ -29,6 +29,10 @@ describe('StorageService', () => {
       return storage[key] = value;
     });
 
+    spyOn(localStorage, 'clear').and.callFake(() => {
+      return storage = {}
+    });
+
   });
 
   it('should be created', () => {
@@ -39,4 +43,9 @@ describe('StorageService', () => {
     service.setItem(lKeyToSaveItem, mockListSuperHero);
     expect(service.getItem(lKeyToSaveItem)).toEqual(mockListSuperHero);    
   });
+  it('should clear storage', () => {
+    service.setItem(lKeyToSaveItem, mockListSuperHero);
+    service.clear();
+    expect(service.getItem(lKeyToSaveItem)).toBeNull();
+  })
 });

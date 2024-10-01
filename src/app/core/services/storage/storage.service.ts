@@ -16,6 +16,10 @@ export class StorageService {
     return this._parseObjectToJson(lStorageObject);
   }
 
+  clear(): void {
+    localStorage.clear();
+  }
+
   private _parseObjectToString(pObject: any): string {
     return JSON.stringify(pObject);
   }

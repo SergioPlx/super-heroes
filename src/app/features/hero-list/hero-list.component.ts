@@ -27,7 +27,7 @@ import { CharacterCardItemComponent } from '../../shared/components/character-ca
   ],
   providers: [
     CharactersService,
-    NotificationService  ,
+    NotificationService,
   ],
   templateUrl: './hero-list.component.html',
   styleUrl: './hero-list.component.css'
