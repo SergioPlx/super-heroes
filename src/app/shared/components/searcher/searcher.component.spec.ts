@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearcherComponent } from './searcher.component';
+import { By } from '@angular/platform-browser';
 
 const lText: string = 'heroes searcher';
 
@@ -43,4 +44,18 @@ describe('SearcherComponent', () => {
     expect(button).toBeTruthy();    
     expect(inputGroup).toBeTruthy();
   });  
+
+  it('should reset filter, handleClickReset()', () => {
+    component.vSearchText = lText;
+    spyOn(component.voutput_onSearch, 'emit');
+    const el = fixture.nativeElement;
+    const button = el.querySelector('.p-button-help');
+
+    expect(button).toBeTruthy();
+    
+    component.handleClickReset();
+    expect(component.voutput_onSearch.emit).toHaveBeenCalled();
+    expect(component.vSearchText).toEqual('');
+
+  });
 });

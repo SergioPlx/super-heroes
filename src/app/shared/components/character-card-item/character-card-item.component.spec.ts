@@ -1,28 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CharacterCardComponent } from './character-card.component';
+import { CharacterCardItemComponent } from './character-card-item.component';
 import { ConfirmationService } from 'primeng/api';
 
-describe('CharacterCardComponent', () => {
-  let component: CharacterCardComponent;
-  let fixture: ComponentFixture<CharacterCardComponent>;
+describe('CharacterCardItemComponent', () => {
+  let component: CharacterCardItemComponent;
+  let fixture: ComponentFixture<CharacterCardItemComponent>;
   let confirmationService: any;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        CharacterCardComponent
-      ]      
+        CharacterCardItemComponent
+      ]
     })
     .compileComponents();
-    
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CharacterCardComponent);
+    fixture = TestBed.createComponent(CharacterCardItemComponent);
     component = fixture.componentInstance;
     confirmationService = fixture.debugElement.injector.get(ConfirmationService);
     fixture.detectChanges();
-  })
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -71,6 +70,5 @@ describe('CharacterCardComponent', () => {
   it('should has a confirm dialog', ()=> {
     const lConfirmDialog = fixture.nativeElement.querySelector('p-confirmDialog');
     expect(lConfirmDialog).toBeTruthy();
-  })
-
+  });
 });

@@ -27,8 +27,10 @@ export class SearcherComponent {
 
   handleClickSearch(): void {      
     this.voutput_onSearch.emit(this.vSearchText)
-    // this.vSearchText = '';
   }
-
-  //TODO: Add reset filter button
+  
+  handleClickReset(): void {
+    this.vSearchText = '';
+    this.handleClickSearch();
+  }
 }

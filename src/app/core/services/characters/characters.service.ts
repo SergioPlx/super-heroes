@@ -20,12 +20,13 @@ export class CharactersService {
     return this._http.get<any[]>(url)
       .pipe(
         map((result: any) => {                  
-          const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');                    
+          const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');                      
           if (!llstCharacters || !llstCharacters.length) {            
-            result.data.results = this._mapResponse(result);
-            this._storage.setItem('lstCharacters', result.data.results);
-            return result.data.results
+            const llsMappedCharacters: IModelCharacter[] = this._mapResponse(result);
+            this._storage.setItem('lstCharacters', llsMappedCharacters);
+            return llsMappedCharacters
           }
+
           return llstCharacters;
         }
       ),
@@ -38,18 +39,14 @@ export class CharactersService {
   getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> { 
     try {
       let llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
-      let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};
-    
-      const lHasId = lrow_Character.id ?? null;      
+      let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};    
+      const lHasId = lrow_Character.id ?? null;  
       if (!lHasId) {
         return throwError(() => <IModelCharacter>{});
       }      
       return of(lrow_Character)
         .pipe(          
-          delay(1000),
-          catchError(err => {
-            throw <IModelCharacter>{}
-          })
+          delay(1000)
         );
     } catch(e) {
       return throwError(() => <IModelCharacter>{});
@@ -67,10 +64,7 @@ export class CharactersService {
       this._storage.setItem('lstCharacters', llstCharacters);
       return of(prow_SuperHero)
         .pipe(
-          delay(1000),
-          catchError(err => {
-            throw <IModelCharacter>{}
-          })
+          delay(1000)
         );
     } catch(e) {
       return throwError(() => <IModelCharacter>{});
@@ -88,10 +82,7 @@ export class CharactersService {
         this._storage.setItem('lstCharacters', llstCharacters);      
         return of(llstCharacters[lIndex])
         .pipe(
-          delay(1000),
-          catchError(err => {
-            throw <IModelCharacter>{}
-          })
+          delay(1000)
         );        
       }
       return throwError(() => <IModelCharacter>{});
@@ -106,14 +97,14 @@ export class CharactersService {
       const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');
       const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lrowCharacter: IModelCharacter) => {
         return lrowCharacter.id !== pSuperHeroId
-      });
-      this._storage.setItem('lstCharacters', filteredCharacters);
+      });      
       return of(filteredCharacters)
         .pipe(
-          delay(1000),
-          catchError(err => {
-            throw <IModelCharacter[]>[]
-          })
+          map(res => {
+            this._storage.setItem('lstCharacters', res)
+            return res
+          }),
+          delay(1000)
         );
     } catch(e) {      
       return throwError(() => <IModelCharacter[]>[]);

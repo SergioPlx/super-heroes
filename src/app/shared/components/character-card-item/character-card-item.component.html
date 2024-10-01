@@ -1,0 +1,34 @@
+<p-card header="{{row_Character.name}}">
+    <ng-template pTemplate="header">
+        <img               
+            [src]="row_Character.image" 
+            [alt]="row_Character.name"  
+            style="height: 250px; object-fit: contain;"/>
+    </ng-template>
+    
+        <p>
+            {{ row_Character.description }}
+        </p>
+    
+    <ng-template pTemplate="footer">
+        <div class="flex gap-3 mt-1">
+            <p-button 
+            alt="Button remove super hero"
+            label="Remove" 
+            severity="danger"
+            class="w-full"                     
+            styleClass="w-full" 
+            (onClick)="handleClickDelete($event, row_Character.id)" />
+
+        <p-button 
+            alt="Edit super hero"
+            label="Edit" 
+            class="w-full"                     
+            severity="success"
+            styleClass="w-full" 
+            (onClick)="handleClickEdit(row_Character.id)" />
+
+            <p-confirmDialog />
+        </div>
+    </ng-template>
+</p-card>

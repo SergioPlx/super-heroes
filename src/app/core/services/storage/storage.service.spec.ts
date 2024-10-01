@@ -13,10 +13,26 @@ const lKeyToSaveItem: string = 'lstCharacters';
 
 describe('StorageService', () => {
   let service: StorageService;
+  let storage = {} as any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(StorageService);
+
+    storage = {};
+
+    spyOn(localStorage, 'getItem').and.callFake((key: string) => {
+      return storage[key] ?? null
+    });
+
+    spyOn(localStorage, 'setItem').and.callFake((key: string, value: string) => {
+      return storage[key] = value;
+    });
+
+    spyOn(localStorage, 'clear').and.callFake(() => {
+      return storage = {}
+    });
+
   });
 
   it('should be created', () => {
@@ -27,4 +43,9 @@ describe('StorageService', () => {
     service.setItem(lKeyToSaveItem, mockListSuperHero);
     expect(service.getItem(lKeyToSaveItem)).toEqual(mockListSuperHero);    
   });
+  it('should clear storage', () => {
+    service.setItem(lKeyToSaveItem, mockListSuperHero);
+    service.clear();
+    expect(service.getItem(lKeyToSaveItem)).toBeNull();
+  })
 });

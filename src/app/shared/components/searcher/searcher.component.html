@@ -7,9 +7,19 @@
         (keyup.enter)="handleClickSearch()"
         [(ngModel)]="vSearchText"
         #ctrlInputSearchHero/>
+        
+    <button type="button"
+        pButton
+        label="Reset"
+        icon="pi pi-times"
+        severity="help"
+        (click)="handleClickReset()">
+    </button>     
+
     <button type="button" 
         pButton 
         label="Search"
+        icon="pi pi-search"
         (click)="handleClickSearch()">
     </button>
 </p-inputGroup>
