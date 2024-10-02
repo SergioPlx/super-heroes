@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { NotificationService } from '../../core/services/notifications/notification.service';
-import { ModelViewManager } from '../../models/view-manager/view-manager';
+import { LoaderService } from '../../core/services/loader/loader.service';
 
 @Component({
   selector: 'app-hero-detail',
@@ -30,13 +30,13 @@ export class HeroDetailComponent implements OnInit {
   private _superHeroId!: string | null;
   private _row_SuperHero: IModelCharacter = <IModelCharacter>{};
 
-  public vIsNew: boolean = true;  
-  public row_ViewManager: ModelViewManager = new ModelViewManager({loaded: false});
+  public vIsNew: boolean = true; 
 
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
-    private _appCharacterService: CharactersService,    
+    private _appCharacterService: CharactersService,  
+    private _appLoaderService: LoaderService,  
     private _appNotificationService: NotificationService,    
   ) {    
     this._activatedRoute.paramMap.subscribe({
@@ -49,10 +49,13 @@ export class HeroDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {        
-    (this.vIsNew) ? this.row_ViewManager.setLoaded(true) : this.getSuperHero();
+    if (!this.vIsNew) {
+      this.getSuperHero();
+    }
   }
 
   getSuperHero(): void {
+    this._appLoaderService.setOn();
     this._appCharacterService.getCharacterById(this._superHeroId)
       .subscribe({
         next: (result: IModelCharacter) => {        
@@ -62,13 +65,13 @@ export class HeroDetailComponent implements OnInit {
           this._appNotificationService.error('An error ocurred while getting the hero');
           this.handleClickBack();
         },
-        complete: () => this.row_ViewManager.setLoaded(true)
+        complete: () => this._appLoaderService.setOff()
       })
   }
 
   handleClickSave(): void {    
     const lrowNewCharacter: IModelCharacter = <IModelCharacter>this.vCtrlCharacterForm.formCharacterGroup.value;
-    this.row_ViewManager.setLoaded(false);
+    this._appLoaderService.setOn();
     (this.vIsNew) ? this._createSuperHero(lrowNewCharacter) : this._updateSuperHero(lrowNewCharacter);
   }
 
