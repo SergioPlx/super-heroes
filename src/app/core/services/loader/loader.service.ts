@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, concatMap, finalize, Observable, of, tap } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LoaderService {
 
   private loaderSubject = new BehaviorSubject<boolean>(false);

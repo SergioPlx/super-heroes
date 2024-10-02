@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { LoaderComponent } from './shared/components/loader/loader.component';
-import { LoaderService } from './core/services/loader/loader.service';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +13,7 @@ import { LoaderService } from './core/services/loader/loader.service';
     RouterOutlet
   ],
   providers: [
-    MessageService,     
-    LoaderService
+    MessageService    
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
