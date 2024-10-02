@@ -10,7 +10,6 @@ import { SearcherComponent } from '../../shared/components/searcher/searcher.com
 import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
 import { NotificationService } from '../../core/services/notifications/notification.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ModelViewManager } from '../../models/view-manager/view-manager';
 import { CharacterCardItemComponent } from '../../shared/components/character-card-item/character-card-item.component';
 import { LoaderService } from '../../core/services/loader/loader.service';
 
@@ -37,8 +36,7 @@ export class HeroListComponent implements OnInit {
   layout: any = 'list';
   lst_Characters: IModelCharacter[] = [];
  
-  public vTextSearched: string = '';  
-  public row_AppViewManager: ModelViewManager = new ModelViewManager({loaded: false});
+  public vTextSearched: string = '';    
   
   constructor(
     private _appCharacterService: CharactersService,
@@ -63,7 +61,6 @@ export class HeroListComponent implements OnInit {
           this._appNotificationService.error('An error ocurrs');      
         },
         complete:() => {          
-          //this.row_AppViewManager.setLoaded(true);
           this._appLoaderService.setOff();
         }
       });
@@ -78,7 +75,7 @@ export class HeroListComponent implements OnInit {
   }
 
   handleClickDelete(pSuperHeroId: number): void {    
-    this.row_AppViewManager.setLoaded(false);
+    this._appLoaderService.setOn();
     this._appCharacterService.deleteSuperHero(pSuperHeroId)
       .subscribe({
         next: (response: IModelCharacter[]) => {          
@@ -90,7 +87,7 @@ export class HeroListComponent implements OnInit {
         },
         complete: () => {          
           this._appNotificationService.success('Super hero is deleted successfully');          
-          this.row_AppViewManager.setLoaded(true);
+          this._appLoaderService.setOff();
         }
       });
   }

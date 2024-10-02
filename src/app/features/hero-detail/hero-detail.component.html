@@ -8,41 +8,36 @@
     </h2>
 </div>
 
-@if(row_ViewManager.isLoaded) {
-    <div class="grid pt-3">
-        <div class="col-12">
-            <button 
-                alt="Button back to list"
-                class="ml-3 mr-2"
-                pButton 
-                pRipple 
-                icon="pi pi-arrow-left"                     
-                severity="warning"            
-                (click)="handleClickBack()">
-            </button>
-        
-            <button                 
-                alt="Button save super hero"            
-                pButton 
-                pRipple 
-                icon="pi pi-save"                     
-                severity="warning"    
-                [disabled]="!isValid"                       
-                (click)="handleClickSave()">
-            </button>
-        </div>
-    </div>
 
-    <div class="grid">
-        <div class="col-12">
-            <charecter-form 
-                [vinput_rowSuperHero]="row_SuperHero" 
-                #ctrlCharacterForm />
-        </div>
-    </div>    
-} @else {
-    <div class="flex align-items-center justify-content-center w-full h-full">
-        <p-progressSpinner ariaLabel="loading" />
+<div class="grid pt-3">
+    <div class="col-12">
+        <button 
+            alt="Button back to list"
+            class="ml-3 mr-2"
+            pButton 
+            pRipple 
+            icon="pi pi-arrow-left"                     
+            severity="warning"            
+            (click)="handleClickBack()">
+        </button>
+    
+        <button                 
+            alt="Button save super hero"            
+            pButton 
+            pRipple 
+            icon="pi pi-save"                     
+            severity="warning"    
+            [disabled]="!isValid"                       
+            (click)="handleClickSave()">
+        </button>
     </div>
-} 
+</div>
+
+<div class="grid">
+    <div class="col-12">
+        <charecter-form 
+            [vinput_rowSuperHero]="row_SuperHero" 
+            #ctrlCharacterForm />
+    </div>
+</div>    
 
