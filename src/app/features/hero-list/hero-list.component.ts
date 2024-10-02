@@ -12,12 +12,13 @@ import { NotificationService } from '../../core/services/notifications/notificat
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ModelViewManager } from '../../models/view-manager/view-manager';
 import { CharacterCardItemComponent } from '../../shared/components/character-card-item/character-card-item.component';
+import { LoaderService } from '../../core/services/loader/loader.service';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
-    ButtonModule,    
+    ButtonModule,      
     CharacterCardListItemComponent,  
     CharacterCardItemComponent, 
     DataViewModule,            
@@ -26,8 +27,8 @@ import { CharacterCardItemComponent } from '../../shared/components/character-ca
     ValueFilterPipe
   ],
   providers: [
-    CharactersService,
-    NotificationService,
+    CharactersService,    
+    NotificationService,    
   ],
   templateUrl: './hero-list.component.html',
   styleUrl: './hero-list.component.css'
@@ -35,11 +36,13 @@ import { CharacterCardItemComponent } from '../../shared/components/character-ca
 export class HeroListComponent implements OnInit {
   layout: any = 'list';
   lst_Characters: IModelCharacter[] = [];
+ 
   public vTextSearched: string = '';  
   public row_AppViewManager: ModelViewManager = new ModelViewManager({loaded: false});
   
   constructor(
     private _appCharacterService: CharactersService,
+    private _appLoaderService: LoaderService,
     private _appNotificationService: NotificationService,
     private _router: Router
   ) {}
@@ -50,6 +53,7 @@ export class HeroListComponent implements OnInit {
   }
   
   getCharacterList(): void {    
+    this._appLoaderService.setOn();
     this._appCharacterService.getCharactersList()
       .subscribe({
         next: (llstHeroes: IModelCharacter[]) => {          
@@ -59,7 +63,8 @@ export class HeroListComponent implements OnInit {
           this._appNotificationService.error('An error ocurrs');      
         },
         complete:() => {          
-          this.row_AppViewManager.setLoaded(true);
+          //this.row_AppViewManager.setLoaded(true);
+          this._appLoaderService.setOff();
         }
       });
   }

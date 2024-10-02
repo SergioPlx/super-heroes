@@ -14,7 +14,7 @@
     </button>
 </div>
 <div class="list-content">
-    @defer (when row_AppViewManager.isLoaded; prefetch when !row_AppViewManager.isLoaded){
+
         <div class="card pt-3">
             
             <p-dataView [rows]="10"                    
@@ -58,9 +58,5 @@
                 </ng-template>
             </p-dataView>
         </div>
-    } @placeholder { 
-        <div class="flex align-items-center justify-content-center w-full h-full">
-            <p-progressSpinner ariaLabel="loading" />
-        </div>
-    }
+
 </div>
