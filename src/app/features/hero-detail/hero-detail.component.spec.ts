@@ -5,13 +5,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MessageService } from 'primeng/api';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
-import { IModelCharacter } from '../../interfaces/character/character.interface';
+import { IModelCharacter } from '@interfaces/character/character.interface';
 import { Observable, of } from 'rxjs';
-import { CharactersService } from '../../core/services/characters/characters.service';
+import { CharactersService } from '@core/services/characters/characters.service';
 import { HeroListComponent } from '../hero-list/hero-list.component';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form.component';
+import { CharecterFormComponent } from '@shared/components/character-form/charecter-form.component';
 
 const DEFAULT_IMG: string = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
 const mockSuperHero: IModelCharacter = {

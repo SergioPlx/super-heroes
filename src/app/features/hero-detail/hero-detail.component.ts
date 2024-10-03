@@ -1,12 +1,12 @@
 import { OnInit, Component, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CharactersService } from '../../core/services/characters/characters.service';
-import { IModelCharacter } from '../../interfaces/character/character.interface';
 import { ButtonModule } from 'primeng/button';
-import { CharecterFormComponent } from '../../shared/components/character-form/charecter-form.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { NotificationService } from '../../core/services/notifications/notification.service';
-import { LoaderService } from '../../core/services/loader/loader.service';
+import { CharactersService } from '@core/services/characters/characters.service';
+import { NotificationService } from '@core/services/notifications/notification.service';
+import { LoaderService } from '@core/services/loader/loader.service';
+import { IModelCharacter } from '@interfaces/character/character.interface';
+import { CharecterFormComponent } from '@shared/components/character-form/charecter-form.component';
 
 @Component({
   selector: 'app-hero-detail',

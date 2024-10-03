@@ -1,17 +1,19 @@
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import {  DataViewModule } from 'primeng/dataview';
-import { CharactersService } from '../../core/services/characters/characters.service';
-import { IModelCharacter } from '../../interfaces/character/character.interface';
-import { ButtonModule } from 'primeng/button';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { CharacterCardListItemComponent } from '../../shared/components/character-card-list-item/character-card-list-item.component';
-import { SearcherComponent } from '../../shared/components/searcher/searcher.component';
-import { ValueFilterPipe } from '../../shared/pipes/value-filter/value-filter.pipe';
-import { NotificationService } from '../../core/services/notifications/notification.service';
+import { ButtonModule } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { CharacterCardItemComponent } from '../../shared/components/character-card-item/character-card-item.component';
-import { LoaderService } from '../../core/services/loader/loader.service';
+import { CharactersService } from '@core/services/characters/characters.service';
+import { NotificationService } from '@core/services/notifications/notification.service';
+import { LoaderService } from '@core/services/loader/loader.service';
+import { IModelCharacter } from '@interfaces/character/character.interface';
+import { CharacterCardListItemComponent } from '@shared/components/character-card-list-item/character-card-list-item.component';
+import { SearcherComponent } from '@shared/components/searcher/searcher.component';
+import { ValueFilterPipe } from '@shared/pipes/value-filter/value-filter.pipe';
+
+
+import { CharacterCardItemComponent } from '@shared/components/character-card-item/character-card-item.component';
+
 
 @Component({
   selector: 'hero-list',
