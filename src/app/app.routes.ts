@@ -1,7 +1,4 @@
 import { Routes } from '@angular/router';
-import { HeroListComponent } from './features/hero-list/hero-list.component';
-import { HeroDetailComponent } from './features/hero-detail/hero-detail.component';
-import { PageNotFoundComponent } from './features/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
     {
@@ -10,19 +7,19 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {
-        path: 'heroList',
-        component: HeroListComponent
+        path: 'heroList',        
+        loadComponent: () => import('./features/hero-list/hero-list.component').then(m => m.HeroListComponent)
     },
     {
         path: 'hero/new',
-        component: HeroDetailComponent
+        loadComponent: () => import('./features/hero-detail/hero-detail.component').then(m => m.HeroDetailComponent)
     },
     {
-        path: 'hero/:id',
-        component: HeroDetailComponent
+        path: 'hero/:id',        
+        loadComponent: () => import('./features/hero-detail/hero-detail.component').then(m => m.HeroDetailComponent)
     },
     { 
-        path: '**', 
-        component: PageNotFoundComponent 
+        path: '**',         
+        loadComponent: () => import('./features/page-not-found/page-not-found.component').then(m => m.PageNotFoundComponent)
     },
 ];
