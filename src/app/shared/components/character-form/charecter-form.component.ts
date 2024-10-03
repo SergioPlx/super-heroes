@@ -1,11 +1,12 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { FileSelectEvent, FileUpload, FileUploadModule } from 'primeng/fileupload';
+import { FileSelectEvent, FileUploadModule } from 'primeng/fileupload';
 import { TextUppercaseDirective } from '../../directives/text-uppercase/text-uppercase.directive';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'charecter-form',
@@ -21,13 +22,11 @@ import { CommonModule } from '@angular/common';
   templateUrl: './charecter-form.component.html',
   styleUrl: './charecter-form.component.css'
 })
-export class CharecterFormComponent implements OnInit, OnChanges {
+export class CharecterFormComponent implements OnInit {
 
   @ViewChild('ctrlSuperHeroImage', {static: false}) vCtrlSuperHeroImage!: ElementRef;
   
-  @Input() vinput_IsNew: boolean = false;
-  @Input() vinput_IsLoaded: boolean = false;
-  @Input() vinput_rowSuperHero: IModelCharacter = <IModelCharacter>{};
+  @Input() vinput_rowHero$: Observable<IModelCharacter> = new Observable<IModelCharacter>();
 
   public formCharacterGroup: FormGroup = new FormGroup({})
 
@@ -35,13 +34,10 @@ export class CharecterFormComponent implements OnInit, OnChanges {
     this._initForm();
   }
 
-
-  ngOnInit(): void {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['vinput_rowSuperHero'].currentValue.id) {      
-      this._updateForm();
-    }
+  ngOnInit(): void {
+    this.vinput_rowHero$.subscribe(
+      (value) => this._updateForm(value)
+    );
   }
 
   onUpload(pEvent:  FileSelectEvent): void {       
@@ -53,7 +49,6 @@ export class CharecterFormComponent implements OnInit, OnChanges {
       lReader.onload = (e) => {
         lBase64File = lReader.result;
         this.formCharacterGroup.patchValue({image: lBase64File});
-        this.row_SuperHero.image = this.formCharacterGroup.value.image;
       }
 
       lReader.readAsDataURL(pEvent.files[i]);
@@ -68,16 +63,16 @@ export class CharecterFormComponent implements OnInit, OnChanges {
     })
   }
 
-  private _updateForm(): void {
+  private _updateForm(pHero: IModelCharacter): void {
     this.formCharacterGroup.patchValue({      
-      name: this.row_SuperHero.name,
-      description: this.row_SuperHero.description,
-      image: this.row_SuperHero.image
+      name: pHero.name,
+      description: pHero.description,
+      image: pHero.image
     })
   }
 
-  get row_SuperHero(): IModelCharacter {
-    return this.vinput_rowSuperHero;
+  get rowHero$(): Observable<IModelCharacter> {
+    return this.vinput_rowHero$;
   }
 
   get isValid(): boolean {

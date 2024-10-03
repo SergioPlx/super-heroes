@@ -12,12 +12,15 @@ import { NotificationService } from '../../core/services/notifications/notificat
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CharacterCardItemComponent } from '../../shared/components/character-card-item/character-card-item.component';
 import { LoaderService } from '../../core/services/loader/loader.service';
+import { catchError, finalize, map, Observable, ObservableInput, of, tap, throwError } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
-    ButtonModule,      
+    ButtonModule,   
+    CommonModule,   
     CharacterCardListItemComponent,  
     CharacterCardItemComponent, 
     DataViewModule,            
@@ -34,7 +37,10 @@ import { LoaderService } from '../../core/services/loader/loader.service';
 })
 export class HeroListComponent implements OnInit {
   layout: any = 'list';
-  lst_Characters: IModelCharacter[] = [];
+  //lst_Characters: IModelCharacter[] = [];
+
+
+  lstHeros$: Observable<IModelCharacter[]> = new Observable<IModelCharacter[]>();
  
   public vTextSearched: string = '';    
   
@@ -51,19 +57,15 @@ export class HeroListComponent implements OnInit {
   }
   
   getCharacterList(): void {    
-    this._appLoaderService.setOn();
-    this._appCharacterService.getCharactersList()
-      .subscribe({
-        next: (llstHeroes: IModelCharacter[]) => {          
-          this.lst_Characters = llstHeroes;          
-        },
-        error: (err) => {
-          this._appNotificationService.error('An error ocurrs');      
-        },
-        complete:() => {          
-          this._appLoaderService.setOff();
-        }
-      });
+    const heroes$ = this._appCharacterService.getCharactersList()
+      .pipe(
+        catchError(err => {
+          this._appNotificationService.error('An error ocurrs');
+          return throwError(() => err)
+        })
+      );
+    
+    this.lstHeros$ = this._appLoaderService.showLoaderUntilCompleted(heroes$);
   }
 
   handleSearch(pTextSearch: string): void {    
@@ -75,21 +77,16 @@ export class HeroListComponent implements OnInit {
   }
 
   handleClickDelete(pSuperHeroId: number): void {    
-    this._appLoaderService.setOn();
-    this._appCharacterService.deleteSuperHero(pSuperHeroId)
-      .subscribe({
-        next: (response: IModelCharacter[]) => {          
-          this.lst_Characters = response;         
-        },
-        error: (err) => {          
-          this._appNotificationService.error('An error ocurrs deleting super hero');
-          this.getCharacterList();    
-        },
-        complete: () => {          
-          this._appNotificationService.success('Super hero is deleted successfully');          
-          this._appLoaderService.setOff();
-        }
-      });
+    const heroDeleted$ = this._appCharacterService.deleteSuperHero(pSuperHeroId);
+
+    this.lstHeros$ = this._appLoaderService.showLoaderUntilCompleted(heroDeleted$)
+      .pipe(
+        tap(() =>this._appNotificationService.success('Super hero is deleted successfully')),
+        catchError(err => {
+          this._appNotificationService.error('An error ocurrs deleting super hero');                    
+          return this._appCharacterService.getCharactersList();
+        })        
+      );
   }
 
   handleClickNewHero(): void {

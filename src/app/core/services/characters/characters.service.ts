@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
+import { catchError, delay, map, Observable, of, shareReplay, throwError } from 'rxjs';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
 
@@ -77,10 +77,16 @@ export class CharactersService {
       let lIndex = llstCharacters.findIndex((llrowCurrentCharacter: IModelCharacter) => llrowCurrentCharacter.id.toString() === pSuperHeroId);
       
       if (lIndex !== -1) {
-        prow_SuperHero.id = llstCharacters[lIndex].id;
-        llstCharacters[lIndex] = {...prow_SuperHero};           
-        this._storage.setItem('lstCharacters', llstCharacters);      
-        return of(llstCharacters[lIndex])
+
+        const newHero: IModelCharacter = {
+          ...llstCharacters[lIndex],
+          ...prow_SuperHero          
+        };
+
+        const newHeroes: IModelCharacter[] = llstCharacters.slice(0);
+        newHeroes[lIndex] = newHero;
+        this._storage.setItem('lstCharacters', newHeroes);   
+        return of(newHero)
         .pipe(
           delay(1000)
         );        
@@ -104,7 +110,8 @@ export class CharactersService {
             this._storage.setItem('lstCharacters', res)
             return res
           }),
-          delay(1000)
+          delay(1000),
+          shareReplay()
         );
     } catch(e) {      
       return throwError(() => <IModelCharacter[]>[]);

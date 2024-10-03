@@ -33,7 +33,7 @@ const mockedCharacterService: {
   updateSuperHero: (pSuperHeroId: number, lrowNewCharacter: IModelCharacter) => of(mockSuperHero)
 }
 
-describe('HeroDetailComponent', () => {
+fdescribe('HeroDetailComponent', () => {
   let component: HeroDetailComponent;
   let childComponent: CharecterFormComponent;
   let fixture: ComponentFixture<HeroDetailComponent>;

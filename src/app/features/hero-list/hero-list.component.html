@@ -13,50 +13,50 @@
         (click)="handleClickNewHero()">
     </button>
 </div>
+
+
 <div class="list-content">
+    <div class="card pt-3">
+        
+        <p-dataView [rows]="10"                    
+                    [value]="(lstHeros$ | async)! | valueFilter: 'name' : vTextSearched" 
+                    [paginator]="true"
+                    [totalRecords]="(lstHeros$ | async)?.length"
+                    paginatorStyleClass="border-noround"
+                    [layout]="layout"
+                    [lazy]="false"
+                    #dv>
 
-        <div class="card pt-3">
-            
-            <p-dataView [rows]="10"                    
-                        [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
-                        [paginator]="true"
-                        [totalRecords]="lst_Characters.length"
-                        paginatorStyleClass="border-noround"
-                        [layout]="layout"
-                        [lazy]="false"
-                        #dv>
+            <ng-template pTemplate="header">
+                <div class="flex justify-content-end">
+                    <p-dataViewLayoutOptions /> 
+                </div>
+            </ng-template>
 
-                <ng-template pTemplate="header">
-                    <div class="flex justify-content-end">
-                        <p-dataViewLayoutOptions /> 
-                    </div>
-                </ng-template>
+            <ng-template pTemplate="list" let-characters>
+                <div class="grid grid-nogutter">
+                    @for(character of characters; track character.id) {
+                        <character-card-list-item 
+                            class="w-full"
+                            [vinput_rowCharacter]="character"  
+                            (voutput_onEdit)="handleClickEdit($event)"
+                            (voutput_onDelete)="handleClickDelete($event)"/>
+                    }
+                </div>
+            </ng-template>
 
-                <ng-template pTemplate="list" let-characters>
-                    <div class="grid grid-nogutter">
-                        @for(character of characters; track character.id) {
-                            <character-card-list-item 
-                                class="w-full"
-                                [vinput_rowCharacter]="character"  
+            <ng-template pTemplate="grid" let-characters>
+                <div class="grid grid-nogutter">
+                    @for(character of characters; track character.id) {
+                        <div class="col-12 sm:col-6 md:col-4 xl:col-6 p-2">
+                            <character-card-item 
+                                [vinput_rowCharacter]="character"
                                 (voutput_onEdit)="handleClickEdit($event)"
-                                (voutput_onDelete)="handleClickDelete($event)"/>
-                        }
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="grid" let-characters>
-                    <div class="grid grid-nogutter">
-                        @for(character of characters; track character.id) {
-                            <div class="col-12 sm:col-6 md:col-4 xl:col-6 p-2">
-                                <character-card-item 
-                                    [vinput_rowCharacter]="character"
-                                    (voutput_onEdit)="handleClickEdit($event)"
-                                    (voutput_onDelete)="handleClickDelete($event)" />
-                            </div>
-                        }
-                    </div>                    
-                </ng-template>
-            </p-dataView>
-        </div>
-
+                                (voutput_onDelete)="handleClickDelete($event)" />
+                        </div>
+                    }
+                </div>                    
+            </ng-template>
+        </p-dataView>
+    </div>
 </div>
