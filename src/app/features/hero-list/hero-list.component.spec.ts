@@ -2,10 +2,10 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { HeroListComponent } from './hero-list.component';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { CharactersService } from '../../core/services/characters/characters.service';
-import { IModelCharacter } from '../../interfaces/character/character.interface';
+import { CharactersService } from '@core/services/characters/characters.service';
+import { IModelCharacter } from '@interfaces/character/character.interface';
 import { MessageService } from 'primeng/api';
-import { NotificationService } from '../../core/services/notifications/notification.service';
+import { NotificationService } from '@core/services/notifications/notification.service';
 import { HeroDetailComponent } from '../hero-detail/hero-detail.component';
 import { provideRouter, Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
