@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoaderService } from '../../../core/services/loader/loader.service';
 import { CommonModule } from '@angular/common';
@@ -14,5 +14,6 @@ import { CommonModule } from '@angular/common';
   styleUrl: './loader.component.css'
 })
 export class LoaderComponent {
-  constructor(public appLoaderService: LoaderService) {}
+  appLoaderService: LoaderService = inject(LoaderService);
+  
 }

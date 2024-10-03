@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import {  DataViewModule } from 'primeng/dataview';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCharacter } from '../../interfaces/character/character.interface';
@@ -33,35 +33,32 @@ import { LoaderService } from '../../core/services/loader/loader.service';
   styleUrl: './hero-list.component.css'
 })
 export class HeroListComponent implements OnInit {
+
+  private _appLoaderService = inject(LoaderService);
+  private _appCharacterService = inject(CharactersService);
+  private _appNotificationService = inject(NotificationService);
+  private _router = inject(Router);
+
+
   layout: any = 'list';
   lst_Characters: IModelCharacter[] = [];
  
-  public vTextSearched: string = '';    
+  public vTextSearched: string = '';
   
-  constructor(
-    private _appCharacterService: CharactersService,
-    private _appLoaderService: LoaderService,
-    private _appNotificationService: NotificationService,
-    private _router: Router
-  ) {}
-
+  constructor() {}
 
   ngOnInit(): void {
     this.getCharacterList();
   }
   
-  getCharacterList(): void {    
-    this._appLoaderService.setOn();
-    this._appCharacterService.getCharactersList()
+  getCharacterList(): void {
+    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharactersList())
       .subscribe({
         next: (llstHeroes: IModelCharacter[]) => {          
-          this.lst_Characters = llstHeroes;          
+          this.lst_Characters = llstHeroes;                  
         },
         error: (err) => {
           this._appNotificationService.error('An error ocurrs');      
-        },
-        complete:() => {          
-          this._appLoaderService.setOff();
         }
       });
   }
@@ -74,9 +71,8 @@ export class HeroListComponent implements OnInit {
     this._router.navigate(['hero', pSuperHeroId]);
   }
 
-  handleClickDelete(pSuperHeroId: number): void {    
-    this._appLoaderService.setOn();
-    this._appCharacterService.deleteSuperHero(pSuperHeroId)
+  handleClickDelete(pSuperHeroId: number): void {        
+    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.deleteSuperHero(pSuperHeroId))
       .subscribe({
         next: (response: IModelCharacter[]) => {          
           this.lst_Characters = response;         
@@ -87,9 +83,8 @@ export class HeroListComponent implements OnInit {
         },
         complete: () => {          
           this._appNotificationService.success('Super hero is deleted successfully');          
-          this._appLoaderService.setOff();
         }
-      });
+      })
   }
 
   handleClickNewHero(): void {
