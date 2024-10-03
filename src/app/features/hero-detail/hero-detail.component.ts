@@ -41,15 +41,7 @@ export class HeroDetailComponent implements OnInit {
     private _appCharacterService: CharactersService,  
     private _appLoaderService: LoaderService,  
     private _appNotificationService: NotificationService,    
-  ) {    
-    this._activatedRoute.paramMap.subscribe({
-      next: (params) => {        
-        const id = params.get('id');
-        this._superHeroId = id;
-        this.vIsNew = this._superHeroId === null;        
-      }
-    });    
-  }
+  ) {}
 
   private _createSuperHero(prowSuperHero: IModelCharacter): void {
     const heroSaved$ = this._appCharacterService.postSuperHero(prowSuperHero);
@@ -83,7 +75,10 @@ export class HeroDetailComponent implements OnInit {
     updatedHero$.subscribe();
   }
 
-  ngOnInit(): void {        
+  ngOnInit(): void {     
+    this._superHeroId = this._activatedRoute.snapshot.paramMap.get('id');    
+    this.vIsNew = this._superHeroId === null;
+
     if (!this.vIsNew) {
       this.getSuperHero();
     }
