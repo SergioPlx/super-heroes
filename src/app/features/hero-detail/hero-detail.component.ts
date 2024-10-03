@@ -1,4 +1,4 @@
-import { OnInit, Component, ViewChild } from '@angular/core';
+import { OnInit, Component, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CharactersService } from '../../core/services/characters/characters.service';
 import { IModelCharacter } from '../../interfaces/character/character.interface';
@@ -24,39 +24,39 @@ import { LoaderService } from '../../core/services/loader/loader.service';
   styleUrl: './hero-detail.component.css'
 })
 export class HeroDetailComponent implements OnInit {
- 
-  @ViewChild('ctrlCharacterForm', {static: false}) vCtrlCharacterForm!: CharecterFormComponent;
+  
+  private _appCharacterService = inject(CharactersService);
+  private _appLoaderService = inject(LoaderService);
+  private _appNotificationService = inject(NotificationService);
+  private _activatedRoute = inject(ActivatedRoute);
+  private _router = inject(Router);
 
   private _superHeroId!: string | null;
   private _row_SuperHero: IModelCharacter = <IModelCharacter>{};
+ 
+  vIsNew: boolean = true; 
 
-  public vIsNew: boolean = true; 
+  @ViewChild('ctrlCharacterForm', {static: false}) vCtrlCharacterForm!: CharecterFormComponent;
 
-  constructor(
-    private _activatedRoute: ActivatedRoute,
-    private _router: Router,
-    private _appCharacterService: CharactersService,  
-    private _appLoaderService: LoaderService,  
-    private _appNotificationService: NotificationService,    
-  ) {    
+  constructor() {
     this._activatedRoute.paramMap.subscribe({
       next: (params) => {        
         const id = params.get('id');
         this._superHeroId = id;
         this.vIsNew = this._superHeroId === null;        
       }
-    });    
+    });   
   }
 
-  ngOnInit(): void {        
+  ngOnInit(): void {    
     if (!this.vIsNew) {
       this.getSuperHero();
     }
   }
 
   getSuperHero(): void {
-    this._appLoaderService.setOn();
-    this._appCharacterService.getCharacterById(this._superHeroId)
+
+    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharacterById(this._superHeroId))
       .subscribe({
         next: (result: IModelCharacter) => {        
           this._row_SuperHero = result;          
@@ -70,8 +70,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   handleClickSave(): void {    
-    const lrowNewCharacter: IModelCharacter = <IModelCharacter>this.vCtrlCharacterForm.formCharacterGroup.value;
-    this._appLoaderService.setOn();
+    const lrowNewCharacter: IModelCharacter = <IModelCharacter>this.vCtrlCharacterForm.formCharacterGroup.value;    
     (this.vIsNew) ? this._createSuperHero(lrowNewCharacter) : this._updateSuperHero(lrowNewCharacter);
   }
 
@@ -80,7 +79,7 @@ export class HeroDetailComponent implements OnInit {
   }
   
   private _createSuperHero(prowSuperHero: IModelCharacter): void {
-    this._appCharacterService.postSuperHero(prowSuperHero)
+    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.postSuperHero(prowSuperHero))
     .subscribe(res => {                                
         this._appNotificationService.success('Super hero is saved successfully');
         this.handleClickBack();
@@ -88,7 +87,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   private _updateSuperHero(prow_SuperHero: IModelCharacter): void {
-    this._appCharacterService.updateSuperHero(this._superHeroId, prow_SuperHero)
+    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.updateSuperHero(this._superHeroId, prow_SuperHero))
       .subscribe(res => {          
         this._appNotificationService.success('Super hero is updated successfully')
         this.handleClickBack();

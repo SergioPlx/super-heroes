@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
@@ -10,14 +10,12 @@ import { StorageService } from '../storage/storage.service';
 })
 export class CharactersService {
 
-  constructor(
-    private _http: HttpClient,
-    private _storage: StorageService
-  ) { }
-
+  private _http = inject(HttpClient);
+  private _storage = inject(StorageService);
+  
   getCharactersList(): Observable<IModelCharacter[]> {
     let url: string = `${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`;    
-    return this._http.get<any[]>(url)
+    return this._http.get<IModelCharacter[]>(url)
       .pipe(
         map((result: any) => {                  
           const llstCharacters: IModelCharacter[] = this._storage.getItem('lstCharacters');                      
