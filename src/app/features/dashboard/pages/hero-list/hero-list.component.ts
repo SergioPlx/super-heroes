@@ -11,19 +11,33 @@ import { CharacterCardListItemComponent } from '@shared/components/character-car
 import { SearcherComponent } from '@shared/components/searcher/searcher.component';
 import { ValueFilterPipe } from '@shared/pipes/value-filter/value-filter.pipe';
 
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatTableModule} from '@angular/material/table';
+import {MatListModule} from '@angular/material/list';
 
 import { CharacterCardItemComponent } from '@shared/components/character-card-item/character-card-item.component';
+import { TitleComponent } from '@shared/components/title/title.component';
 
 
 @Component({
   selector: 'hero-list',
   standalone: true,
   imports: [
-    ButtonModule,      
+    ButtonModule,        
     CharacterCardListItemComponent,  
     CharacterCardItemComponent, 
-    DataViewModule,            
+    DataViewModule,   
+    
+    MatButtonModule,
+    MatCardModule,
+    MatGridListModule,    
+    MatTableModule,
+    MatListModule,
+
     SearcherComponent,
+    TitleComponent,
     ProgressSpinnerModule,    
     ValueFilterPipe
   ],
@@ -36,8 +50,11 @@ import { CharacterCardItemComponent } from '@shared/components/character-card-it
 })
 export class HeroListComponent implements OnInit {
 
+  public _appCharacterService = inject(CharactersService);
+
+
+  
   private _appLoaderService = inject(LoaderService);
-  private _appCharacterService = inject(CharactersService);
   private _appNotificationService = inject(NotificationService);
   private _router = inject(Router);
 
@@ -49,12 +66,11 @@ export class HeroListComponent implements OnInit {
   
   constructor() {}
 
-  ngOnInit(): void {
-    this.getCharacterList();
-  }
+  ngOnInit(): void {}
   
   getCharacterList(): void {
-    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharactersList())
+
+    /*this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharactersList())
       .subscribe({
         next: (llstHeroes: IModelCharacter[]) => {          
           this.lst_Characters = llstHeroes;                  
@@ -62,7 +78,7 @@ export class HeroListComponent implements OnInit {
         error: (err) => {
           this._appNotificationService.error('An error ocurrs');      
         }
-      });
+      });*/
   }
 
   handleSearch(pTextSearch: string): void {    
@@ -89,7 +105,7 @@ export class HeroListComponent implements OnInit {
       })
   }
 
-  handleClickNewHero(): void {
+  /*handleClickNewHero(): void {
     this._router.navigate(['hero', 'new']);
-  }
+  }*/
 }

@@ -8,7 +8,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angul
 import { IModelCharacter } from '@interfaces/character/character.interface';
 import { Observable, of } from 'rxjs';
 import { CharactersService } from '@core/services/characters/characters.service';
-import { HeroListComponent } from '../hero-list/hero-list.component';
+import { HeroListComponent } from '../dashboard/pages/hero-list/hero-list.component';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { CharecterFormComponent } from '@shared/components/character-form/charecter-form.component';

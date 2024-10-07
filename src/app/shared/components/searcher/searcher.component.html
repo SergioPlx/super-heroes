@@ -1,4 +1,21 @@
-<p-inputGroup class="pb-3">    
+
+<mat-form-field class="w-full">
+    <mat-label>Search super hero</mat-label>
+    <input         
+        type="text" 
+        matInput 
+        placeholder="Search super hero" 
+        (keyup.enter)="handleClickSearch()"
+        [(ngModel)]="vSearchText"
+        #ctrlInputSearchHero />
+        
+        <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+
+
+
+<!--
+<p-inputGroup>        
     <input 
         type="text" 
         pInputText 
@@ -6,7 +23,7 @@
         TextCapitalize
         (keyup.enter)="handleClickSearch()"
         [(ngModel)]="vSearchText"
-        #ctrlInputSearchHero/>
+        #ctrlInputSearchHero/>    
         
     <button type="button"
         pButton
@@ -23,3 +40,4 @@
         (click)="handleClickSearch()">
     </button>
 </p-inputGroup>
+-->

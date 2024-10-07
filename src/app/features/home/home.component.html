@@ -1,0 +1,19 @@
+<p-toolbar styleClass="border-noround">
+    <div class="p-toolbar-group-start">
+        <p-button                  
+            class="mr-2"    
+            icon="pi pi-plus"
+            pTooltip="Add new hero"             
+            (onClick)="onClickNewHero()"/>
+    </div>
+    <div class="p-toolbar-group-center">
+        
+    </div>
+    <div class="p-toolbar-group-end">
+        <searcher (voutput_onSearch)="onSearch($event)"/>
+    </div>
+</p-toolbar>
+
+<hero-list />
+
+

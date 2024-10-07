@@ -1,3 +1,42 @@
+<div class="pt-6 pl-3 pr-3 pb-6">
+    <app-title text="List of Heroes" />
+
+    <searcher (voutput_onSearch)="handleSearch($event)"/>
+
+    <section style="z-index: 1;">
+        <div class="grid">            
+            @for(hero of _appCharacterService.heroes(); track hero.id){
+                <div class="col-12 sm:col-12 md:col-6 lg:col-4">
+                    <mat-card class="example-card" appearance="outlined">
+                        <mat-card-header>
+                            <div mat-card-avatar class="example-header-image"></div>
+                            <mat-card-title>{{hero.name}}</mat-card-title>                            
+                        </mat-card-header>
+                        <img 
+                            style="margin: 0 auto; background-color: black;"
+                            mat-card-xl-image 
+                            class="mb-3"
+                            [src]="hero.image" 
+                            alt="Photo of a Shiba Inu">
+                        <mat-card-content>
+                            <p>
+                                {{hero.description}}
+                            </p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button mat-button>EDIT</button>
+                            <button mat-button>DELETE</button>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            }            
+        </div>
+    </section>
+
+</div>
+
+
+<!--
 <div class="w-full list-header">
     <p class="text-center text-6xl text-white font-bold">Super Heroes</p>
 
@@ -13,14 +52,16 @@
         (click)="handleClickNewHero()">
     </button>
 </div>
+-->
+<!--
 <div class="list-content">
 
         <div class="card pt-3">
             
             <p-dataView [rows]="10"                    
-                        [value]="lst_Characters | valueFilter: 'name' : vTextSearched" 
+                        [value]="_appCharacterService.heroes()| valueFilter: 'name' : vTextSearched" 
                         [paginator]="true"
-                        [totalRecords]="lst_Characters.length"
+                        [totalRecords]="_appCharacterService.heroes().length"
                         paginatorStyleClass="border-noround"
                         [layout]="layout"
                         [lazy]="false"
@@ -60,3 +101,4 @@
         </div>
 
 </div>
+-->

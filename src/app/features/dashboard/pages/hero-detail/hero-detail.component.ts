@@ -1,4 +1,4 @@
-import { OnInit, Component, ViewChild, inject } from '@angular/core';
+import { OnInit, Component, ViewChild, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -7,6 +7,8 @@ import { NotificationService } from '@core/services/notifications/notification.s
 import { LoaderService } from '@core/services/loader/loader.service';
 import { IModelCharacter } from '@interfaces/character/character.interface';
 import { CharecterFormComponent } from '@shared/components/character-form/charecter-form.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-hero-detail',
@@ -35,6 +37,13 @@ export class HeroDetailComponent implements OnInit {
   private _row_SuperHero: IModelCharacter = <IModelCharacter>{};
  
   vIsNew: boolean = true; 
+
+  public hero = toSignal(
+    this._activatedRoute.params
+    .pipe(
+      switchMap(({id}) => this._appCharacterService.getCharacterById(id))
+    )
+  )
 
   @ViewChild('ctrlCharacterForm', {static: false}) vCtrlCharacterForm!: CharecterFormComponent;
 
@@ -75,7 +84,7 @@ export class HeroDetailComponent implements OnInit {
   }
 
   handleClickBack(): void {    
-    this._router.navigate(['heroList']);
+    this._router.navigate(['heroes']);
   }
   
   private _createSuperHero(prowSuperHero: IModelCharacter): void {

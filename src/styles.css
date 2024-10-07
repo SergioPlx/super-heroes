@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
     --main-bg-color: #334155;
+    --main-text-color: #fff;
     --page_padding: 125px;
     --page-padding-bottom: 25px;
 }
@@ -11,9 +12,13 @@
 html, body, main {
     height: 100%;
     overflow: hidden;
+    padding: 0;
+    margin: 0;
 }
 
 .error-message {
     color: red;
     font-size: 10px;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

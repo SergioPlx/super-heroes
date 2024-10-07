@@ -1,0 +1,9 @@
+<mat-nav-list>
+    @for(option of menuItems; track option.path) {
+        <a mat-list-item
+            [routerLink]="option.path"
+            routerLinkActive="text-yellow-400">
+            {{option.title}}
+        </a>
+    }
+</mat-nav-list>

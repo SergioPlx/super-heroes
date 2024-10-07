@@ -1,0 +1,25 @@
+<mat-drawer-container class="container" autosize>
+    <mat-drawer #drawer class="sidenav" mode="side" [opened]="true"> 
+      <app-title 
+        cssClass="text-center"
+        text="Super Heroes" />
+
+        <sidemenu />
+    </mat-drawer>
+  
+    <div class="sidenav-content">
+        <div class="top-bar">
+            <mat-toolbar-row>
+                <button title="toggle" type="button" mat-icon-button (click)="drawer.toggle()">
+                    <mat-icon>menu</mat-icon>                    
+                </button>
+            </mat-toolbar-row>
+            <mat-divider></mat-divider>
+        </div>
+
+
+        <router-outlet />
+    </div>
+
+
+  </mat-drawer-container>
