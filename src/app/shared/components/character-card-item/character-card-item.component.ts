@@ -1,57 +1,49 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, inject, input, output} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { ConfirmationService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'character-card-item',
   standalone: true,
-  imports: [
-    ButtonModule,
-    CardModule,
-    ConfirmDialogModule
+  imports: [    
+    MatButtonModule,
+    MatCardModule,
   ],
-  providers: [
-    ConfirmationService
-  ],
+  providers: [],
   templateUrl: './character-card-item.component.html',
   styleUrl: './character-card-item.component.css'
 })
 export class CharacterCardItemComponent {
+ 
+  hero = input.required<IModelCharacter>();
+  onEdit = output<number>();
+  onDelete = output<number>()
 
-  @Input() vinput_rowCharacter: IModelCharacter = <IModelCharacter>{};
-  @Output() voutput_onEdit: EventEmitter<number> = new EventEmitter();
-  @Output() voutput_onDelete: EventEmitter<number> = new EventEmitter();
+  readonly dialog = inject(MatDialog);
 
-  constructor(
-    private _appConfirmationService: ConfirmationService
-  ) {}
+  constructor() {}
 
-  handleClickEdit(pSuperHeroId: number): void {
-    this.voutput_onEdit.emit(pSuperHeroId);
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        hero: this.hero()
+      },
+      width: '250px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+    });
+
+    dialogRef.afterClosed().subscribe((result: IModelCharacter) => {
+      if(result !== undefined) {
+        this.onDelete.emit(result.id);
+      }
+    });
   }
 
-  handleClickDelete(pEvent: Event, pSuperHeroId: number): void {
-    this._appConfirmationService.confirm({
-      target: pEvent.target as EventTarget,
-            message: 'Are you sure that you want to proceed?',
-            header: 'Confirmation',
-            icon: 'pi pi-exclamation-triangle',
-            acceptIcon:"none",
-            rejectIcon:"none",
-            rejectButtonStyleClass:"p-button-text",
-            accept: () => {
-                this.voutput_onDelete.emit(pSuperHeroId);
-            },
-            reject: () => {
-                // this._appMessageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-            }
-    });   
-  }
-
-  get row_Character(): IModelCharacter {
-    return this.vinput_rowCharacter;
+  handleClickEdit(pSuperHeroId: number): void {    
+    this.onEdit.emit(pSuperHeroId);
   }
 }

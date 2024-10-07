@@ -6,6 +6,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterOutlet} from '@angular/router';
+import { LoaderComponent } from '@shared/components/loader/loader.component';
 import { SidemenuComponent } from '@shared/components/sidemenu/sidemenu.component';
 import {TitleComponent} from '@shared/components/title/title.component';
 
@@ -13,6 +14,7 @@ import {TitleComponent} from '@shared/components/title/title.component';
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    LoaderComponent,
     MatButtonModule,
     MatDividerModule,
     MatIconModule,

@@ -42,7 +42,6 @@ export class CharactersService {
           map(response => this._mapResponse(response))
         )
         .subscribe( res => {
-          console.log(res)
           this.#state.set({
             loading: false,
             heroes: res
@@ -80,7 +79,7 @@ export class CharactersService {
       let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};    
       const lHasId = lrow_Character.id ?? null;  
       if (!lHasId) {
-        return throwError(() => <IModelCharacter>{});
+        return of(<IModelCharacter>{});
       }      
       return of(lrow_Character)
         .pipe(          

@@ -1,4 +1,4 @@
-import { OnInit, Component, ViewChild, inject, signal } from '@angular/core';
+import { OnInit, Component, ViewChild, inject, signal, WritableSignal, Signal, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -8,7 +8,10 @@ import { LoaderService } from '@core/services/loader/loader.service';
 import { IModelCharacter } from '@interfaces/character/character.interface';
 import { CharecterFormComponent } from '@shared/components/character-form/charecter-form.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs';
+import { TitleComponent } from '@shared/components/title/title.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-hero-detail',
@@ -17,6 +20,11 @@ import { switchMap } from 'rxjs';
     ButtonModule,
     CharecterFormComponent,
     ProgressSpinnerModule,
+
+
+    MatButtonModule,
+    MatIconModule,
+    TitleComponent,
   ],
   providers: [
     CharactersService,    
@@ -25,7 +33,7 @@ import { switchMap } from 'rxjs';
   templateUrl: './hero-detail.component.html',
   styleUrl: './hero-detail.component.css'
 })
-export class HeroDetailComponent implements OnInit {
+export class HeroDetailComponent {
   
   private _appCharacterService = inject(CharactersService);
   private _appLoaderService = inject(LoaderService);
@@ -34,57 +42,34 @@ export class HeroDetailComponent implements OnInit {
   private _router = inject(Router);
 
   private _superHeroId!: string | null;
-  private _row_SuperHero: IModelCharacter = <IModelCharacter>{};
  
-  vIsNew: boolean = true; 
-
-  public hero = toSignal(
+  public hero = toSignal<IModelCharacter>(
     this._activatedRoute.params
     .pipe(
-      switchMap(({id}) => this._appCharacterService.getCharacterById(id))
+      switchMap(({id}) => this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharacterById(id)))      
     )
-  )
+  );
+
+  public isNew = computed(() => this.hero()?.id === undefined);
+  public superHeroId = computed(() => this.hero()?.id);
 
   @ViewChild('ctrlCharacterForm', {static: false}) vCtrlCharacterForm!: CharecterFormComponent;
 
   constructor() {
-    this._activatedRoute.paramMap.subscribe({
-      next: (params) => {        
-        const id = params.get('id');
-        this._superHeroId = id;
-        this.vIsNew = this._superHeroId === null;        
-      }
-    });   
-  }
-
-  ngOnInit(): void {    
-    if (!this.vIsNew) {
-      this.getSuperHero();
-    }
-  }
-
-  getSuperHero(): void {
-
-    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharacterById(this._superHeroId))
-      .subscribe({
-        next: (result: IModelCharacter) => {        
-          this._row_SuperHero = result;          
-        }, 
-        error: (err) => {                            
-          this._appNotificationService.error('An error ocurred while getting the hero');
-          this.handleClickBack();
-        },
-        complete: () => this._appLoaderService.setOff()
-      })
+    effect(() => {
+      console.log('Hero: ', this.hero());
+      console.log('Id: ', this.superHeroId())
+      console.log('Is new: ', this.isNew());
+    })
   }
 
   handleClickSave(): void {    
     const lrowNewCharacter: IModelCharacter = <IModelCharacter>this.vCtrlCharacterForm.formCharacterGroup.value;    
-    (this.vIsNew) ? this._createSuperHero(lrowNewCharacter) : this._updateSuperHero(lrowNewCharacter);
+    (this.isNew()) ? this._createSuperHero(lrowNewCharacter) : this._updateSuperHero(lrowNewCharacter);
   }
 
   handleClickBack(): void {    
-    this._router.navigate(['heroes']);
+    this._router.navigate(['dashboard', 'heroes']);
   }
   
   private _createSuperHero(prowSuperHero: IModelCharacter): void {
@@ -103,12 +88,9 @@ export class HeroDetailComponent implements OnInit {
       })
   }
 
-  get row_SuperHero(): IModelCharacter {
-    return this._row_SuperHero;
-  }
-
-  get isValid(): boolean {    
-    return this.vCtrlCharacterForm?.isValid;
+  onChangeHeroImage(pCustomObject: any): void {
+    console.log('Image: ', pCustomObject);
+    pCustomObject.hero.image = pCustomObject.image;
   }
 
 }

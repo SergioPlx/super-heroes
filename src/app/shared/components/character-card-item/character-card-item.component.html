@@ -1,34 +1,21 @@
-<p-card header="{{row_Character.name}}">
-    <ng-template pTemplate="header">
-        <img               
-            [src]="row_Character.image" 
-            [alt]="row_Character.name"  
-            style="height: 250px; object-fit: contain;"/>
-    </ng-template>
-    
+<mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>{{hero().name}}</mat-card-title>                            
+    </mat-card-header>
+    <img 
+        style="margin: 0 auto; background-color: black;"
+        mat-card-xl-image 
+        class="mb-3"
+        [src]="hero().image" 
+        alt="Photo of a Shiba Inu">
+    <mat-card-content>
         <p>
-            {{ row_Character.description }}
+            {{hero().description}}
         </p>
-    
-    <ng-template pTemplate="footer">
-        <div class="flex gap-3 mt-1">
-            <p-button 
-            alt="Button remove super hero"
-            label="Remove" 
-            severity="danger"
-            class="w-full"                     
-            styleClass="w-full" 
-            (onClick)="handleClickDelete($event, row_Character.id)" />
-
-        <p-button 
-            alt="Edit super hero"
-            label="Edit" 
-            class="w-full"                     
-            severity="success"
-            styleClass="w-full" 
-            (onClick)="handleClickEdit(row_Character.id)" />
-
-            <p-confirmDialog />
-        </div>
-    </ng-template>
-</p-card>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button (click)="handleClickEdit(hero().id)">EDIT</button>
+        <button mat-button (click)="openDialog('200ms', '200ms')">DELETE</button>
+    </mat-card-actions>
+</mat-card>

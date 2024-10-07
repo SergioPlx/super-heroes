@@ -1,0 +1,7 @@
+img {
+    object-fit: contain;
+}
+
+.file-input {
+    display: none;
+}

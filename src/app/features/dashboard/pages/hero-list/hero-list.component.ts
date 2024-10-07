@@ -16,9 +16,11 @@ import {MatCardModule} from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 
 import { CharacterCardItemComponent } from '@shared/components/character-card-item/character-card-item.component';
 import { TitleComponent } from '@shared/components/title/title.component';
+import { ConfirmationDialogComponent } from '@shared/components/confirmation-dialog/confirmation-dialog.component';
 
 
 @Component({
@@ -31,10 +33,11 @@ import { TitleComponent } from '@shared/components/title/title.component';
     DataViewModule,   
     
     MatButtonModule,
-    MatCardModule,
+    
     MatGridListModule,    
     MatTableModule,
     MatListModule,
+    MatDialogModule,
 
     SearcherComponent,
     TitleComponent,
@@ -50,15 +53,12 @@ import { TitleComponent } from '@shared/components/title/title.component';
 })
 export class HeroListComponent implements OnInit {
 
-  public _appCharacterService = inject(CharactersService);
-
-
-  
+  public _appCharacterService = inject(CharactersService);  
   private _appLoaderService = inject(LoaderService);
   private _appNotificationService = inject(NotificationService);
   private _router = inject(Router);
 
-
+ 
   layout: any = 'list';
   lst_Characters: IModelCharacter[] = [];
  
@@ -81,12 +81,14 @@ export class HeroListComponent implements OnInit {
       });*/
   }
 
+
+
   handleSearch(pTextSearch: string): void {    
     this.vTextSearched = pTextSearch;
   }
   
   handleClickEdit(pSuperHeroId: number): void {
-    this._router.navigate(['hero', pSuperHeroId]);
+    this._router.navigate(['dashboard', 'hero', pSuperHeroId]);
   }
 
   handleClickDelete(pSuperHeroId: number): void {        
@@ -104,8 +106,4 @@ export class HeroListComponent implements OnInit {
         }
       })
   }
-
-  /*handleClickNewHero(): void {
-    this._router.navigate(['hero', 'new']);
-  }*/
 }

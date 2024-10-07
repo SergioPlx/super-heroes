@@ -1,0 +1,31 @@
+<div class="w-full">
+    <img class="pb-3 block xl:block mx-auto border-round hero-image bg-black-alpha-90"      
+        name="heroImage"    
+        width="350"
+        height="350"                                
+        [src]="hero()?.image || 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'"
+        ngDefaultControl 
+        formControlName="image" />
+            
+    <input 
+        accept="image/*"
+        class="file-input"
+        type="file"                    
+        placeholder="Select Image"
+        (change)="onUpload($event)"
+        #fileUpload>
+
+    <div class="file-upload">
+
+        {{fileName || "No file uploaded yet."}}
+
+        <button 
+            class="upload-btn"
+            color="primary"
+            mat-mini-fab  
+            type="button"
+            (click)="fileUpload.click()">
+            <mat-icon>attach_file</mat-icon>
+        </button>
+    </div>
+</div>

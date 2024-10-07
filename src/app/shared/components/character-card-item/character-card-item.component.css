@@ -1,8 +1,9 @@
-::ng-deep .p-card-content {
+mat-card-content p {    
     height: 100px;
-}
-::ng-deep .p-card-content > p {
+    display: -webkit-box;    
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;  
+    box-orient: vertical;
     overflow: hidden;
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
 }

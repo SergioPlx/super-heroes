@@ -1,4 +1,4 @@
-<mat-drawer-container class="container" autosize>
+<mat-drawer-container class="container">
     <mat-drawer #drawer class="sidenav" mode="side" [opened]="true"> 
       <app-title 
         cssClass="text-center"
@@ -17,6 +17,7 @@
             <mat-divider></mat-divider>
         </div>
 
+        <loader />
 
         <router-outlet />
     </div>

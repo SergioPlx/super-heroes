@@ -1,17 +1,33 @@
-<div class="w-full text-left text-white pl-3">    
+<div class="w-full pt-6 pl-3">    
     <h2 class="text-4xl">
-        @if(vIsNew) {
+
+        <app-title text="{{isNew() ? 'New Super Hero' : 'Edit ' + hero()?.name}}" />
+
+        <!--@if(vIsNew) {
             New Super Hero
         }@else {
             Edit {{hero()?.name}}
-        }
+        }-->
     </h2>
 </div>
 
 
-<div class="grid pt-3">
+<div class="grid w-full pl-3 pl-3">
     <div class="col-12">
         <button 
+            class="mr-2"
+            type="button"
+            mat-fab            
+            (click)="handleClickBack()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <button            
+            type="button"
+            mat-fab
+            (click)="handleClickSave()">
+            <mat-icon>save</mat-icon>
+        </button>        
+        <!--<button 
             alt="Button back to list"
             class="ml-3 mr-2"
             pButton 
@@ -30,14 +46,17 @@
             [disabled]="!isValid"                       
             (click)="handleClickSave()">
         </button>
+    -->
     </div>
 </div>
 
-<div class="grid">
+<div class="grid pr-3">
     <div class="col-12">
+        
         <charecter-form 
-            [vinput_rowSuperHero]="row_SuperHero" 
-            #ctrlCharacterForm />
+            [hero]="hero()"  
+            (onChangeImage)="onChangeHeroImage($event)"
+            #ctrlCharacterForm />    
     </div>
 </div>    
 
