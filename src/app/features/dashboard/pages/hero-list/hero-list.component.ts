@@ -1,47 +1,30 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { DataViewModule } from 'primeng/dataview';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { CharactersService } from '@core/services/characters/characters.service';
-import { NotificationService } from '@core/services/notifications/notification.service';
-import { LoaderService } from '@core/services/loader/loader.service';
-import { IModelCharacter } from '@interfaces/character/character.interface';
-import { CharacterCardListItemComponent } from '@shared/components/character-card-list-item/character-card-list-item.component';
-import { SearcherComponent } from '@shared/components/searcher/searcher.component';
-import { ValueFilterPipe } from '@shared/pipes/value-filter/value-filter.pipe';
-
+import {Component, inject, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-
-import { CharacterCardItemComponent } from '@shared/components/character-card-item/character-card-item.component';
-import { TitleComponent } from '@shared/components/title/title.component';
-import { ConfirmationDialogComponent } from '@shared/components/confirmation-dialog/confirmation-dialog.component';
+import {CharactersService} from '@core/services/characters/characters.service';
+import {NotificationService} from '@core/services/notifications/notification.service';
+import {LoaderService} from '@core/services/loader/loader.service';
+import {IModelCharacter} from '@interfaces/character/character.interface';
+import {SearcherComponent} from '@shared/components/searcher/searcher.component';
+import {ValueFilterPipe} from '@shared/pipes/value-filter/value-filter.pipe';
+import {CharacterCardItemComponent} from '@shared/components/character-card-item/character-card-item.component';
+import {TitleComponent} from '@shared/components/title/title.component';
 
 
 @Component({
   selector: 'hero-list',
   standalone: true,
-  imports: [
-    ButtonModule,        
-    CharacterCardListItemComponent,  
+  imports: [           
     CharacterCardItemComponent, 
-    DataViewModule,   
-    
-    MatButtonModule,
-    
+    MatButtonModule,  
     MatGridListModule,    
     MatTableModule,
-    MatListModule,
-    MatDialogModule,
-
+    MatListModule,    
     SearcherComponent,
-    TitleComponent,
-    ProgressSpinnerModule,    
+    TitleComponent,    
     ValueFilterPipe
   ],
   providers: [
