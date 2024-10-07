@@ -1,51 +1,26 @@
-import { Injectable } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { inject, Injectable } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-
-  private _lifeTimeMilliSeconds: number = 6000;
-
-  constructor(
-    private _appMessageService: MessageService
-  ) { }
-
-
-  public success(pDetail: string, pSummary?: string): void {
-    this._appMessageService.add({
-      severity: 'success',
-      summary: pSummary,
-      detail: pDetail,
-      life: this._lifeTimeMilliSeconds
-    });
+  
+  #snackBar = inject(MatSnackBar);
+  #snackBarConfig: MatSnackBarConfig = <MatSnackBarConfig>{
+    horizontalPosition: 'right',
+    verticalPosition: 'top',
+    duration: 5000
   }
 
-  public info(pDetail: string, pSummary?: string): void {
-    this._appMessageService.add({
-      severity: 'info',
-      summary: pSummary,
-      detail: pDetail,
-      life: this._lifeTimeMilliSeconds
-    });
+  constructor() { }
+
+
+  public show(pDetail: string, pSummary?: string): void {
+    this.#snackBar.open(pDetail, pSummary, this.#snackBarConfig)
   }
 
-  public warning(pDetail: string, pSummary?: string): void {
-    this._appMessageService.add({
-      severity: 'warn',
-      summary: pSummary,
-      detail: pDetail,
-      life: this._lifeTimeMilliSeconds
-    });
-  }  
-
-  public error(pDetail: string, pSummary?: string): void {
-    this._appMessageService.add({
-      severity: 'error',
-      summary: pSummary,
-      detail: pDetail,
-      life: this._lifeTimeMilliSeconds
-    });
-  }  
 }

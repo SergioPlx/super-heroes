@@ -42,6 +42,7 @@ export class CharactersService {
           map(response => this._mapResponse(response))
         )
         .subscribe( res => {
+          this.#storage.setItem('lstCharacters', res);
           this.#state.set({
             loading: false,
             heroes: res
@@ -74,6 +75,7 @@ export class CharactersService {
   }
 
   getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> { 
+    console.log('')
     try {
       let llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');
       let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};    

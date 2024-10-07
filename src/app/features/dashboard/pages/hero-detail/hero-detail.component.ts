@@ -1,14 +1,12 @@
-import { OnInit, Component, ViewChild, inject, signal, WritableSignal, Signal, computed, effect } from '@angular/core';
+import { Component, ViewChild, inject, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CharactersService } from '@core/services/characters/characters.service';
 import { NotificationService } from '@core/services/notifications/notification.service';
 import { LoaderService } from '@core/services/loader/loader.service';
 import { IModelCharacter } from '@interfaces/character/character.interface';
 import { CharecterFormComponent } from '@shared/components/character-form/charecter-form.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, switchMap, tap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { TitleComponent } from '@shared/components/title/title.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,11 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-hero-detail',
   standalone: true,
   imports: [
-    ButtonModule,
     CharecterFormComponent,
-    ProgressSpinnerModule,
-
-
     MatButtonModule,
     MatIconModule,
     TitleComponent,
@@ -75,7 +69,7 @@ export class HeroDetailComponent {
   private _createSuperHero(prowSuperHero: IModelCharacter): void {
     this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.postSuperHero(prowSuperHero))
     .subscribe(res => {                                
-        this._appNotificationService.success('Super hero is saved successfully');
+        this._appNotificationService.show('Super hero is saved successfully');
         this.handleClickBack();
     });
   }
@@ -83,7 +77,7 @@ export class HeroDetailComponent {
   private _updateSuperHero(prow_SuperHero: IModelCharacter): void {
     this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.updateSuperHero(this._superHeroId, prow_SuperHero))
       .subscribe(res => {          
-        this._appNotificationService.success('Super hero is updated successfully')
+        this._appNotificationService.show('Super hero is updated successfully')
         this.handleClickBack();
       })
   }

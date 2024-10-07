@@ -25,6 +25,11 @@ export const routes: Routes = [
                 title: 'Edit Hero',
                 loadComponent: () => import('./features/dashboard/pages/hero-detail/hero-detail.component').then(m => m.HeroDetailComponent)
             },
+            {
+                path: '',
+                redirectTo: 'heroes',
+                pathMatch: 'full'
+            }
         ]
     },
     /*{
