@@ -37,7 +37,7 @@ import {TitleComponent} from '@shared/components/title/title.component';
 export class HeroListComponent implements OnInit {
 
   public _appCharacterService = inject(CharactersService);  
-  private _appLoaderService = inject(LoaderService);
+  public _appLoaderService = inject(LoaderService);
   private _appNotificationService = inject(NotificationService);
   private _router = inject(Router);
 
@@ -52,7 +52,7 @@ export class HeroListComponent implements OnInit {
   ngOnInit(): void {}
   
   getCharacterList(): void {
-
+    
     /*this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharactersList())
       .subscribe({
         next: (llstHeroes: IModelCharacter[]) => {          
@@ -78,7 +78,7 @@ export class HeroListComponent implements OnInit {
     this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.deleteSuperHero(pSuperHeroId))
       .subscribe({
         next: (response: IModelCharacter[]) => {          
-          this.lst_Characters = response;         
+          // this.lst_Characters = response;          
         },
         error: (err) => {          
           this._appNotificationService.show('An error ocurrs deleting super hero');

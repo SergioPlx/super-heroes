@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, concatMap, finalize, Observable, of, tap } from 'rxjs';
 
 @Injectable({
@@ -7,7 +7,10 @@ import { BehaviorSubject, concatMap, finalize, Observable, of, tap } from 'rxjs'
 export class LoaderService {
 
   private loaderSubject = new BehaviorSubject<boolean>(false);
-  loader$: Observable<boolean> = this.loaderSubject.asObservable();
+  // loader$: Observable<boolean> = this.loaderSubject.asObservable();
+
+  private loaderSignal = signal<boolean>(false);
+  isLoading = computed(() => this.loaderSignal());
 
   showLoaderUntilCompleted<T>(obs$: Observable<T>): Observable<T> {
     return of(null)
@@ -19,11 +22,13 @@ export class LoaderService {
   }
 
   setOn(): void {
-    this.loaderSubject.next(true);
+    this.loaderSignal.set(true);
+    // this.loaderSubject.next(true);
   }
 
   setOff(): void {
-    this.loaderSubject.next(false);
+    this.loaderSignal.set(false);
+    // this.loaderSubject.next(false);
   }
 
 

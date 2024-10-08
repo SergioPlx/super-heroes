@@ -1,0 +1,12 @@
+.loading {
+    position: fixed;
+    box-shadow: rgba(0, 0, 0, 0.5);
+    background-color: black;
+    z-index: 2;
+    bottom: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}

@@ -1,4 +1,7 @@
-<div class="flex align-items-center justify-content-center w-full h-full" *ngIf="appLoaderService.loader$ | async">
-    <mat-spinner></mat-spinner>
-</div>
+@if (appLoaderService.isLoading()) {
+    <div class="loading">
+        <mat-spinner diameter="25" class="mr-3"></mat-spinner>
+        <span class="text-white">Loading...</span>
+    </div>
+}
 

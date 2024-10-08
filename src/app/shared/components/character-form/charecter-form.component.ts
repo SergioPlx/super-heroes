@@ -11,6 +11,8 @@ type heroUpdated ={
   image: string
 }
 
+const DEFAULT_IMG: string = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
+
 @Component({
   selector: 'charecter-form',
   standalone: true,
@@ -36,7 +38,7 @@ export class CharecterFormComponent implements OnInit {
   public formCharacterGroup: FormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
-    image: new FormControl('http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg')
+    image: new FormControl(DEFAULT_IMG)
   })
 
   constructor() {}
@@ -45,7 +47,7 @@ export class CharecterFormComponent implements OnInit {
     this.formCharacterGroup.patchValue({
       name: this.hero()?.name,
       description: this.hero()?.description,
-      image: this.hero()?.image
+      image: this.hero()?.image || DEFAULT_IMG
     });    
   }
 

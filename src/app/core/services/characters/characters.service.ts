@@ -4,20 +4,20 @@ import { environment } from '../../../../environments/environment.development';
 import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
-
+import { LoaderService } from '../loader/loader.service';
 
 interface State {
   heroes: IModelCharacter[];
   loading: boolean;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class CharactersService {
 
-  private http = inject(HttpClient);
+  #http = inject(HttpClient);
+  #loaderService = inject(LoaderService);
   #storage = inject(StorageService);
 
   #state: WritableSignal<State> = signal<State>({
@@ -37,7 +37,8 @@ export class CharactersService {
     const llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');                      
     if (!llstCharacters || !llstCharacters.length) { 
       let url: string = `${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`;    
-      this.http.get<IModelCharacter[]>(url)
+      this.#loaderService.setOn();
+      this.#http.get<IModelCharacter[]>(url)
         .pipe(
           map(response => this._mapResponse(response))
         )
@@ -47,6 +48,7 @@ export class CharactersService {
             loading: false,
             heroes: res
           });
+          this.#loaderService.setOff();
         });
     } else {
       this.#state.set({
@@ -102,7 +104,7 @@ export class CharactersService {
       llstCharacters.push(prow_SuperHero);
       this.#storage.setItem('lstCharacters', llstCharacters);
       return of(prow_SuperHero)
-        .pipe(
+        .pipe(          
           delay(1000)
         );
     } catch(e) {
@@ -140,7 +142,11 @@ export class CharactersService {
       return of(filteredCharacters)
         .pipe(
           map(res => {
-            this.#storage.setItem('lstCharacters', res)
+            this.#storage.setItem('lstCharacters', res);
+            this.#state.set({
+              loading: false,
+              heroes: llstCharacters
+          })
             return res
           }),
           delay(1000)
