@@ -1,3 +1,12 @@
 ::ng-deep .mat-mdc-list-item-unscoped-content {
     color: var(--main-text-color) !important;
   }
+
+.mat-mdc-nav-list .mat-mdc-list-item {
+  border-radius: 0 !important;
+  color: var(--main-text-color) !important;
+}
+
+.bg-item-select {    
+  background-color: rgba(0,0,0,0.5) !important
+}

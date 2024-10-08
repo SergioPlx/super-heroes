@@ -2,7 +2,7 @@
     @for(option of menuItems; track option.path) {
         <a mat-list-item
             [routerLink]="option.path"
-            routerLinkActive="text-yellow-400">
+            routerLinkActive="bg-item-select">
             {{option.title}}
         </a>
     }

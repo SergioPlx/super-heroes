@@ -1,8 +1,13 @@
 <mat-drawer-container class="container">
-    <mat-drawer #drawer class="sidenav" mode="side" [opened]="true"> 
-      <app-title 
-        cssClass="text-center"
-        text="Super Heroes" />
+    <mat-drawer 
+        class="sidenav"
+        mode="side"
+        [opened]="true"
+        #drawer> 
+
+        <app-title 
+            cssClass="text-center"
+            text="Super Heroes" />
 
         <sidemenu />
     </mat-drawer>

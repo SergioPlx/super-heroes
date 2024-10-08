@@ -1,5 +1,5 @@
 import { Component, ViewChild, inject, computed, effect } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CharactersService } from '@core/services/characters/characters.service';
 import { NotificationService } from '@core/services/notifications/notification.service';
 import { LoaderService } from '@core/services/loader/loader.service';
@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatIconModule,
     TitleComponent,
+    RouterLink
   ],
   providers: [
     CharactersService,    
