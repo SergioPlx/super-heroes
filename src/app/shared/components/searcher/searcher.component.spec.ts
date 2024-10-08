@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { SearcherComponent } from './searcher.component';
 import { By } from '@angular/platform-browser';
@@ -27,35 +27,27 @@ describe('SearcherComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit search text', ()=> {
-    spyOn(component.voutput_onSearch, 'emit');
-    component.vSearchText = lText;
-    component.handleClickSearch()
+  it('should emit search text', fakeAsync(()=> {
+    spyOn(component.voutput_onSearch, 'emit');    
+    component.handleClickSearch(lText)
+    tick(500)
     expect(component.voutput_onSearch.emit).toHaveBeenCalled();
-  });
+  }));
 
   it('should get input group', () => {
     const el = fixture.nativeElement;
     const inputGroup = el.querySelector('p-inputgroup')
     const input = el.querySelector('input');    
-    const button = el.querySelector('button');
-
-    expect(input.placeholder).toBe('Search super hero');
-    expect(button).toBeTruthy();    
+    expect(input.placeholder).toBe('Search super hero');    
     expect(inputGroup).toBeTruthy();
   });  
 
-  it('should reset filter, handleClickReset()', () => {
-    component.vSearchText = lText;
+  it('should reset filter, handleClickReset()', fakeAsync(() => {    
     spyOn(component.voutput_onSearch, 'emit');
-    const el = fixture.nativeElement;
-    const button = el.querySelector('.p-button-help');
-
-    expect(button).toBeTruthy();
-    
+    const el = fixture.nativeElement;        
     component.handleClickReset();
+    tick(500);
     expect(component.voutput_onSearch.emit).toHaveBeenCalled();
-    expect(component.vSearchText).toEqual('');
-
-  });
+    expect(component.voutput_onSearch.emit).toHaveBeenCalledWith('');
+  }));
 });
