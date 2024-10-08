@@ -4,11 +4,14 @@
         pInputText 
         placeholder="Search super hero" 
         TextCapitalize
-        (keyup.enter)="handleClickSearch()"
-        [(ngModel)]="vSearchText"
+        (keyup)="handleClickSearch(ctrlInputSearchHero.value)"        
         #ctrlInputSearchHero/>
+
+        <p-inputGroupAddon>
+            <i class="pi pi-search"></i>
+        </p-inputGroupAddon>
         
-    <button type="button"
+    <!--<button type="button"
         pButton
         label="Reset"
         icon="pi pi-times"
@@ -20,6 +23,6 @@
         pButton 
         label="Search"
         icon="pi pi-search"
-        (click)="handleClickSearch()">
-    </button>
+        (click)="handleClickSearch(ctrlInputSearchHero.value)">
+    </button>-->
 </p-inputGroup>
