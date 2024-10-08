@@ -75,9 +75,10 @@ export class CharactersService {
       })
     );*/
   }
+  
+  
 
-  getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> { 
-    console.log('')
+  getCharacterById(pSuperHeroId: string | null): Observable<IModelCharacter> {     
     try {
       let llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');
       let lrow_Character: IModelCharacter = llstCharacters.find((lrowCurrentCharacter: IModelCharacter) => lrowCurrentCharacter.id.toString() === pSuperHeroId) ?? <IModelCharacter>{};    
@@ -154,6 +155,28 @@ export class CharactersService {
           )            
         );
     } catch(e) {      
+      return throwError(() => <IModelCharacter[]>[]);
+    }
+  }
+
+  searchSuperHeroes(pTextSearch: string): Observable<IModelCharacter[]> {
+    try {
+    const llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');
+    const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lHero: IModelCharacter) => {
+      return lHero.name.toLowerCase().includes(pTextSearch.toLowerCase());
+    });
+
+    return of(filteredCharacters)
+      .pipe(
+        delay(1000),        
+        tap(() =>
+          this.#state.set({
+            loading: false,
+            heroes: filteredCharacters
+          })
+        )
+      );
+    } catch(e) {
       return throwError(() => <IModelCharacter[]>[]);
     }
   }

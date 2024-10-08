@@ -41,33 +41,14 @@ export class HeroListComponent implements OnInit {
   private _appNotificationService = inject(NotificationService);
   private _router = inject(Router);
 
- 
-  //layout: any = 'list';
-  //lst_Characters: IModelCharacter[] = [];
- 
-  public vTextSearched: string = '';
-  
   constructor() {}
 
   ngOnInit(): void {}
   
-  /*getCharacterList(): void {
-    
-    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharactersList())
-      .subscribe({
-        next: (llstHeroes: IModelCharacter[]) => {          
-          this.lst_Characters = llstHeroes;                  
-        },
-        error: (err) => {
-          this._appNotificationService.error('An error ocurrs');      
-        }
-      });
-  }*/
-
-
-
-  handleSearch(pTextSearch: string): void {    
-    this.vTextSearched = pTextSearch;
+  handleSearch(pTextSearch: string): void {        
+    this._appLoaderService.showLoaderUntilCompleted(
+      this._appCharacterService.searchSuperHeroes(pTextSearch)
+    ).subscribe();
   }
   
   handleClickEdit(pSuperHeroId: number): void {
@@ -75,18 +56,13 @@ export class HeroListComponent implements OnInit {
   }
 
   handleClickDelete(pSuperHeroId: number): void {        
-    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.deleteSuperHero(pSuperHeroId))
-      .subscribe({
-        next: (response: IModelCharacter[]) => {          
-          // this.lst_Characters = response;          
-        },
-        error: (err) => {          
-          this._appNotificationService.show('An error ocurrs deleting super hero');
-          //this.getCharacterList();    
-        },
-        complete: () => {          
-          this._appNotificationService.show('Super hero is deleted successfully');          
-        }
-      })
+    this._appLoaderService.showLoaderUntilCompleted(
+      this._appCharacterService.deleteSuperHero(pSuperHeroId)
+    )
+    .subscribe({
+      next: (response: IModelCharacter[]) => {},
+      error: (err) => this._appNotificationService.show('An error ocurrs deleting super hero'),
+      complete: () => this._appNotificationService.show('Super hero is deleted successfully')
+    })
   }
 }

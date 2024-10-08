@@ -5,8 +5,7 @@
         type="text" 
         matInput 
         placeholder="Search super hero" 
-        (keyup.enter)="handleClickSearch()"
-        [(ngModel)]="vSearchText"
+        (keyup)="handleClickSearch(ctrlInputSearchHero.value)"                
         #ctrlInputSearchHero />
         
         <mat-icon matSuffix>search</mat-icon>
