@@ -5,7 +5,7 @@
 
     <section style="z-index: 1;">
         <div class="grid">            
-            @for(hero of _appCharacterService.heroes(); track hero.id){
+            @for(hero of appCharacterService.heroes(); track hero.id){
                 <div class="col-12 sm:col-12 md:col-6 lg:col-4">
                     <character-card-item 
                         [hero]="hero" 
@@ -17,12 +17,13 @@
     </section>
 
     <mat-paginator 
-        [length]="_appCharacterService.totalItems()"
+        [length]="appCharacterService.totalItems()"
         [pageSize]="6"
         [pageSizeOptions]="[6, 12, 24, 100]"
         [showFirstLastButtons]="true"
         (page)="handlePageEvent($event)"
-        aria-label="Select page">
+        aria-label="Select page"
+        #ctrlPaginator>
     </mat-paginator>
 
 </div>

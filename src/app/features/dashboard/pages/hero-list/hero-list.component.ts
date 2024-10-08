@@ -1,5 +1,6 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
+import { tap } from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
@@ -13,7 +14,7 @@ import {ValueFilterPipe} from '@shared/pipes/value-filter/value-filter.pipe';
 import {CharacterCardItemComponent} from '@shared/components/character-card-item/character-card-item.component';
 import {TitleComponent} from '@shared/components/title/title.component';
 
-import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
+import {MatPaginator, MatPaginatorModule, PageEvent} from '@angular/material/paginator';
 
 @Component({
   selector: 'hero-list',
@@ -37,20 +38,27 @@ import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
   templateUrl: './hero-list.component.html',
   styleUrl: './hero-list.component.css'
 })
-export class HeroListComponent implements OnInit {
-
-  public _appCharacterService = inject(CharactersService);  
-  public _appLoaderService = inject(LoaderService);
+export class HeroListComponent {
+  
   #appNotificationService = inject(NotificationService);
   #router = inject(Router);
+  public appCharacterService = inject(CharactersService);  
+  public appLoaderService = inject(LoaderService);
 
+  @ViewChild('ctrlPaginator') ctrlPaginator!: MatPaginator;
+  
   constructor() {}
-
-  ngOnInit(): void {}
     
   handleSearch(pTextSearch: string): void {        
-    this._appLoaderService.showLoaderUntilCompleted(
-      this._appCharacterService.searchSuperHeroes(pTextSearch)
+    this.appLoaderService.showLoaderUntilCompleted(
+      this.appCharacterService.searchSuperHeroes(pTextSearch)
+    ).pipe(
+      tap(() => {
+          if (!this.appCharacterService.currentFilter().length) {
+            this.ctrlPaginator.firstPage();
+          }
+        }
+      )
     ).subscribe();
   }
   
@@ -59,8 +67,8 @@ export class HeroListComponent implements OnInit {
   }
 
   handleClickDelete(pSuperHeroId: number): void {        
-    this._appLoaderService.showLoaderUntilCompleted(
-      this._appCharacterService.deleteSuperHero(pSuperHeroId)
+    this.appLoaderService.showLoaderUntilCompleted(
+      this.appCharacterService.deleteSuperHero(pSuperHeroId)
     )
     .subscribe({
       next: (response: IModelCharacter[]) => {},
@@ -69,8 +77,7 @@ export class HeroListComponent implements OnInit {
     })
   }
 
-  handlePageEvent(pPageEvent: PageEvent) {
-    console.log(pPageEvent);
-    this._appCharacterService.getHeroesByPage(pPageEvent);
+  handlePageEvent(pPageEvent: PageEvent) {    
+    this.appCharacterService.getHeroesByPage(pPageEvent);
   }
 }

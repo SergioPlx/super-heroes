@@ -11,6 +11,8 @@ interface State {
   heroes: IModelCharacter[];  
   loading: boolean;
   totalItems: number;
+  searchTerm: string;
+  filtered: boolean;
 }
 
 @Injectable({
@@ -25,12 +27,15 @@ export class CharactersService {
   #state: WritableSignal<State> = signal<State>({
     loading: true,
     heroes: [],
-    totalItems: 0
+    totalItems: 0,
+    searchTerm: '',
+    filtered: false
   });
 
   public heroes = computed(() => this.#state().heroes);
   public loading = computed(() => this.#state().loading);
   public totalItems = computed(() => this.#state().totalItems);
+  public currentFilter = computed(() => this.#state().searchTerm);
 
   constructor() {
     console.log('Cargando data...');
@@ -52,6 +57,8 @@ export class CharactersService {
             loading: false,            
             heroes: res.slice(0, 6),
             totalItems: res.length,
+            searchTerm: '',
+            filtered: false
           });
           this.#loaderService.setOff();
         });
@@ -59,7 +66,9 @@ export class CharactersService {
       this.#state.set({
         loading: false,
         heroes: llstCharacters.slice(0, 6),
-        totalItems: llstCharacters.length
+        totalItems: llstCharacters.length,
+        searchTerm: '',
+        filtered: false
       });
     }
     
@@ -156,8 +165,10 @@ export class CharactersService {
           tap(() =>
             this.#state.set({
               loading: false,
-              heroes: filteredCharacters,
-              totalItems: filteredCharacters.length
+              heroes: filteredCharacters.slice(0, 6),
+              totalItems: filteredCharacters.length,
+              searchTerm: '',
+              filtered: false
             })
           )            
         );
@@ -168,22 +179,22 @@ export class CharactersService {
 
   searchSuperHeroes(pTextSearch: string): Observable<IModelCharacter[]> {
     try {
-    const llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');
-    const filteredCharacters: IModelCharacter[] = llstCharacters.filter((lHero: IModelCharacter) => {
-      return lHero.name.toLowerCase().includes(pTextSearch.toLowerCase());
-    });
-
-    return of(filteredCharacters)
-      .pipe(
-        delay(1000),        
-        tap(() =>
-          this.#state.set({
-            loading: false,
-            heroes: filteredCharacters,
-            totalItems: filteredCharacters.length
-          })
-        )
-      );
+      const llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');
+      const filteredCharacters: IModelCharacter[] = this._getHeroesBySearchTerm(pTextSearch, llstCharacters);
+              
+      return of(filteredCharacters)
+        .pipe(
+          delay(1000),        
+          tap(() =>
+            this.#state.set({
+              loading: false,
+              heroes: filteredCharacters.slice(0, 6),
+              totalItems: filteredCharacters.length,
+              searchTerm: pTextSearch,
+              filtered: pTextSearch.length > 0
+            })
+          )
+        );
     } catch(e) {
       return throwError(() => <IModelCharacter[]>[]);
     }
@@ -191,16 +202,24 @@ export class CharactersService {
 
   getHeroesByPage(pPageEvent: PageEvent) {
     const {pageSize, pageIndex} = pPageEvent;
-    const heroes: IModelCharacter[] = this.#storage.getItem('lstCharacters');    
-
+    const llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');     
+    const heroes: IModelCharacter[] = this._getHeroesBySearchTerm(this.#state().searchTerm, llstCharacters);
+    
     this.#state.set({
       loading: false,
       heroes: heroes.slice(pageIndex * pageSize, (pageIndex * pageSize) + pageSize),
-      totalItems: heroes.length
+      totalItems: heroes.length,
+      searchTerm: this.#state().searchTerm,
+      filtered: this.#state().filtered
     });
   }
 
-
+  //TODO: Pass to helper
+  private _getHeroesBySearchTerm(pTextSearch: string, heroes: IModelCharacter[]): IModelCharacter[] {
+    return heroes.filter((lHero: IModelCharacter) => {
+      return lHero.name.toLowerCase().includes(pTextSearch);
+    });
+  }
 
   //TODO: Pass to helper
   private _mapResponse(plst_Characters: any): IModelCharacter[] {    
