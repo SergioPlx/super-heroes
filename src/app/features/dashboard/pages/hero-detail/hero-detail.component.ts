@@ -87,4 +87,8 @@ export class HeroDetailComponent {
     pCustomObject.hero.image = pCustomObject.image;
   }
 
+  get isValid(): boolean {
+    return this.vCtrlCharacterForm?.isValid;
+  }
+
 }

@@ -1,16 +1,8 @@
 <div class="w-full pt-6 pl-3">    
     <h2 class="text-4xl">
-
         <app-title text="{{isNew() ? 'New Super Hero' : 'Edit ' + hero()?.name}}" />
-
-        <!--@if(vIsNew) {
-            New Super Hero
-        }@else {
-            Edit {{hero()?.name}}
-        }-->
     </h2>
 </div>
-
 
 <div class="grid w-full pl-3 pl-3">
     <div class="col-12">
@@ -24,29 +16,10 @@
         <button            
             type="button"
             mat-fab
+            [disabled]="!isValid"
             (click)="handleClickSave()">
             <mat-icon>save</mat-icon>
-        </button>        
-        <!--<button 
-            alt="Button back to list"
-            class="ml-3 mr-2"
-            pButton 
-            pRipple 
-            icon="pi pi-arrow-left"                     
-            severity="warning"            
-            (click)="handleClickBack()">
         </button>
-    
-        <button                 
-            alt="Button save super hero"            
-            pButton 
-            pRipple 
-            icon="pi pi-save"                     
-            severity="warning"    
-            [disabled]="!isValid"                       
-            (click)="handleClickSave()">
-        </button>
-    -->
     </div>
 </div>
 

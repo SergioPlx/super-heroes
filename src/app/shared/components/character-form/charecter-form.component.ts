@@ -59,4 +59,8 @@ export class CharecterFormComponent implements OnInit {
     this.onChangeImage.emit(<heroUpdated>{hero: this.hero(), image: this.formCharacterGroup.value.image});
   }
 
+
+  get isValid(): boolean {
+    return this.formCharacterGroup?.valid;
+  }
 }
