@@ -32,7 +32,7 @@ export class SearcherComponent implements OnInit {
   ngOnInit(): void {
     this.debouncer
     .pipe(
-      debounceTime(1000)
+      debounceTime(500)
     ).subscribe(value => this.voutput_onSearch.emit(value))    
   }
 
