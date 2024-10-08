@@ -12,9 +12,18 @@
                         (onEdit)="handleClickEdit($event)"
                         (onDelete)="handleClickDelete($event)"/>
                 </div>
-            }            
+            }                        
         </div>
     </section>
+
+    <mat-paginator 
+        [length]="_appCharacterService.totalItems()"
+        [pageSize]="6"
+        [pageSizeOptions]="[6, 12, 24, 100]"
+        [showFirstLastButtons]="true"
+        (page)="handlePageEvent($event)"
+        aria-label="Select page">
+    </mat-paginator>
 
 </div>
 

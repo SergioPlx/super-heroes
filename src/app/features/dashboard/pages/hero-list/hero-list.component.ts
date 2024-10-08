@@ -13,6 +13,7 @@ import {ValueFilterPipe} from '@shared/pipes/value-filter/value-filter.pipe';
 import {CharacterCardItemComponent} from '@shared/components/character-card-item/character-card-item.component';
 import {TitleComponent} from '@shared/components/title/title.component';
 
+import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
 
 @Component({
   selector: 'hero-list',
@@ -22,10 +23,12 @@ import {TitleComponent} from '@shared/components/title/title.component';
     MatButtonModule,  
     MatGridListModule,    
     MatTableModule,
-    MatListModule,    
+    MatListModule,
     SearcherComponent,
     TitleComponent,    
-    ValueFilterPipe
+    ValueFilterPipe,
+
+    MatPaginatorModule
   ],
   providers: [
     CharactersService,    
@@ -38,14 +41,13 @@ export class HeroListComponent implements OnInit {
 
   public _appCharacterService = inject(CharactersService);  
   public _appLoaderService = inject(LoaderService);
-  private _appNotificationService = inject(NotificationService);
-  private _router = inject(Router);
+  #appNotificationService = inject(NotificationService);
+  #router = inject(Router);
 
   constructor() {}
 
   ngOnInit(): void {}
-  
-  
+    
   handleSearch(pTextSearch: string): void {        
     this._appLoaderService.showLoaderUntilCompleted(
       this._appCharacterService.searchSuperHeroes(pTextSearch)
@@ -53,7 +55,7 @@ export class HeroListComponent implements OnInit {
   }
   
   handleClickEdit(pSuperHeroId: number): void {
-    this._router.navigate(['dashboard', 'hero', pSuperHeroId]);
+    this.#router.navigate(['dashboard', 'hero', pSuperHeroId]);
   }
 
   handleClickDelete(pSuperHeroId: number): void {        
@@ -62,8 +64,13 @@ export class HeroListComponent implements OnInit {
     )
     .subscribe({
       next: (response: IModelCharacter[]) => {},
-      error: (err) => this._appNotificationService.show('An error ocurrs deleting super hero'),
-      complete: () => this._appNotificationService.show('Super hero is deleted successfully')
+      error: (err) => this.#appNotificationService.show('An error ocurrs deleting super hero'),
+      complete: () => this.#appNotificationService.show('Super hero is deleted successfully')
     })
+  }
+
+  handlePageEvent(pPageEvent: PageEvent) {
+    console.log(pPageEvent);
+    this._appCharacterService.getHeroesByPage(pPageEvent);
   }
 }

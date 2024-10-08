@@ -5,10 +5,12 @@ import { catchError, concatMap, delay, map, Observable, of, switchMap, tap, thro
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
 import { LoaderService } from '../loader/loader.service';
+import { PageEvent } from '@angular/material/paginator';
 
 interface State {
-  heroes: IModelCharacter[];
+  heroes: IModelCharacter[];  
   loading: boolean;
+  totalItems: number;
 }
 
 @Injectable({
@@ -22,11 +24,13 @@ export class CharactersService {
 
   #state: WritableSignal<State> = signal<State>({
     loading: true,
-    heroes: []
+    heroes: [],
+    totalItems: 0
   });
 
   public heroes = computed(() => this.#state().heroes);
   public loading = computed(() => this.#state().loading);
+  public totalItems = computed(() => this.#state().totalItems);
 
   constructor() {
     console.log('Cargando data...');
@@ -36,7 +40,7 @@ export class CharactersService {
   private getCharactersList(): void {
     const llstCharacters: IModelCharacter[] = this.#storage.getItem('lstCharacters');                      
     if (!llstCharacters || !llstCharacters.length) { 
-      let url: string = `${environment.baseUrl}characters?limit=10&apikey=${environment.SECRET_KEY}`;    
+      let url: string = `${environment.baseUrl}characters?limit=100&apikey=${environment.SECRET_KEY}`;    
       this.#loaderService.setOn();
       this.#http.get<IModelCharacter[]>(url)
         .pipe(
@@ -45,15 +49,17 @@ export class CharactersService {
         .subscribe( res => {
           this.#storage.setItem('lstCharacters', res);
           this.#state.set({
-            loading: false,
-            heroes: res
+            loading: false,            
+            heroes: res.slice(0, 6),
+            totalItems: res.length,
           });
           this.#loaderService.setOff();
         });
     } else {
       this.#state.set({
         loading: false,
-        heroes: llstCharacters
+        heroes: llstCharacters.slice(0, 6),
+        totalItems: llstCharacters.length
       });
     }
     
@@ -150,7 +156,8 @@ export class CharactersService {
           tap(() =>
             this.#state.set({
               loading: false,
-              heroes: filteredCharacters
+              heroes: filteredCharacters,
+              totalItems: filteredCharacters.length
             })
           )            
         );
@@ -172,7 +179,8 @@ export class CharactersService {
         tap(() =>
           this.#state.set({
             loading: false,
-            heroes: filteredCharacters
+            heroes: filteredCharacters,
+            totalItems: filteredCharacters.length
           })
         )
       );
@@ -180,6 +188,19 @@ export class CharactersService {
       return throwError(() => <IModelCharacter[]>[]);
     }
   }
+
+  getHeroesByPage(pPageEvent: PageEvent) {
+    const {pageSize, pageIndex} = pPageEvent;
+    const heroes: IModelCharacter[] = this.#storage.getItem('lstCharacters');    
+
+    this.#state.set({
+      loading: false,
+      heroes: heroes.slice(pageIndex * pageSize, (pageIndex * pageSize) + pageSize),
+      totalItems: heroes.length
+    });
+  }
+
+
 
   //TODO: Pass to helper
   private _mapResponse(plst_Characters: any): IModelCharacter[] {    

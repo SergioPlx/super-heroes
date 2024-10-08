@@ -21,7 +21,7 @@ const DEFAULT_IMG: string = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_n
     MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    TextUppercaseDirective    
+    TextUppercaseDirective
   ],
   providers: [
   ],
