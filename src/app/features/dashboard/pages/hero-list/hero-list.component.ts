@@ -42,8 +42,8 @@ export class HeroListComponent implements OnInit {
   private _router = inject(Router);
 
  
-  layout: any = 'list';
-  lst_Characters: IModelCharacter[] = [];
+  //layout: any = 'list';
+  //lst_Characters: IModelCharacter[] = [];
  
   public vTextSearched: string = '';
   
@@ -51,9 +51,9 @@ export class HeroListComponent implements OnInit {
 
   ngOnInit(): void {}
   
-  getCharacterList(): void {
+  /*getCharacterList(): void {
     
-    /*this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharactersList())
+    this._appLoaderService.showLoaderUntilCompleted(this._appCharacterService.getCharactersList())
       .subscribe({
         next: (llstHeroes: IModelCharacter[]) => {          
           this.lst_Characters = llstHeroes;                  
@@ -61,8 +61,8 @@ export class HeroListComponent implements OnInit {
         error: (err) => {
           this._appNotificationService.error('An error ocurrs');      
         }
-      });*/
-  }
+      });
+  }*/
 
 
 
@@ -82,7 +82,7 @@ export class HeroListComponent implements OnInit {
         },
         error: (err) => {          
           this._appNotificationService.show('An error ocurrs deleting super hero');
-          this.getCharacterList();    
+          //this.getCharacterList();    
         },
         complete: () => {          
           this._appNotificationService.show('Super hero is deleted successfully');          

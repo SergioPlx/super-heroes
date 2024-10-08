@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
+import { catchError, concatMap, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { IModelCharacter } from '../../../interfaces/character/character.interface';
 import { StorageService } from '../storage/storage.service';
 import { LoaderService } from '../loader/loader.service';
@@ -143,13 +143,15 @@ export class CharactersService {
         .pipe(
           map(res => {
             this.#storage.setItem('lstCharacters', res);
-            this.#state.set({
-              loading: false,
-              heroes: llstCharacters
-          })
             return res
           }),
-          delay(1000)
+          delay(1000),
+          tap(() =>
+            this.#state.set({
+              loading: false,
+              heroes: filteredCharacters
+            })
+          )            
         );
     } catch(e) {      
       return throwError(() => <IModelCharacter[]>[]);
