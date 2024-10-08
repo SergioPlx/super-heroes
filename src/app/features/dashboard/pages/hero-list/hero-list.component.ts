@@ -45,6 +45,7 @@ export class HeroListComponent implements OnInit {
 
   ngOnInit(): void {}
   
+  
   handleSearch(pTextSearch: string): void {        
     this._appLoaderService.showLoaderUntilCompleted(
       this._appCharacterService.searchSuperHeroes(pTextSearch)
